@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" >
+    <title>Event</title>
+    <style type="text/css">
+        #p { width: 300px; height: 300px; padding: 10px;  border: 1px solid black; }
+        #c { width: 100px; height: 100px; border: 1px solid red; }
+     </style>
+</head>
+<body>
+     <div id="p">
+         parent
+         <div id="c">
+             child
+         </div>
+     </div>
+    <script type="text/javascript">
+ 
+        var p = document.getElementById('p'),
+            c = document.getElementById('c');
+
+        c.addEventListener('click', function (e) {
+            console.log(e);
+            console.log('子节点捕获')
+        }, true);
+        c.addEventListener('click', function (e) {
+            console.log(e);
+            console.log('子节点冒泡')
+        }, false);
+ 
+        p.addEventListener('click', function (e) {
+            console.log(e);
+            e.stopPropagation();
+            console.log('父节点捕获')
+        }, true);
+ 
+        p.addEventListener('click', function (e) {
+            console.log(e);
+            console.log('父节点冒泡')
+         }, false);
+ 
+        document.addEventListener('keydown', function (e) {
+            if (e.keyCode == '32') {
+                var type = 'click'; //要触发的事件类型
+                var bubbles = false; //事件是否可以冒泡
+                var cancelable = true; //事件是否可以阻止浏览器默认事件
+                var view = document.defaultView; //与事件关联的视图，该属性默认即可，不管
+                var detail = 0;
+                var screenX = 0;
+                var screenY = 0;
+                var clientX = 0;
+                var clientY = 0;
+                var ctrlKey = false; //是否按下ctrl
+                var altKey = false; //是否按下alt
+                var shiftKey = false;
+                var metaKey = false;
+                var button = 0; //表示按下哪一个鼠标键
+                var relatedTarget = 0; //模拟mousemove或者out时候用到，与事件相关的对象
+                var event = document.createEvent('Events');
+                event.myFlag = 'myc';
+                event.initEvent(type, bubbles, cancelable, view, detail, screenX, screenY, clientX,clientY, ctrlKey, altKey, shiftKey, metaKey, button, relatedTarget);
+                console.log(event);
+                c.dispatchEvent(event);
+        }
+    }, false);
+    </script>
+</body>
+</html>
