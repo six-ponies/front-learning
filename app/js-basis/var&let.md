@@ -26,11 +26,13 @@ function do_something() {
     console.log(x);     // 1
     console.log(y);     // 2
 }
+
 // 在var定义前使用变量会显示未定义
 function do_something_var() {
     console.log(y); // undefined
     var y = 2;
 }
+
 // 在let定义前使用变量会抛出语法错误
 function do_something_let() {
     console.log(x); // SyntaxError thrown
@@ -75,6 +77,7 @@ console.log(i); // i is not defined
 for(var i = 0; i < 10; i++) {
     setTimeout(function(){console.log(i)}, 1000); // 10, 10, 10, 10, 10 ... 10
 }
+
 // 匿名函数内部的i指向了不同的内存对象
 for(let i = 0; i < 10; i++) {
     setTimeout(function(){console.log(i)}, 1000); // 0, 1, 2, 3, 4 ... 9
