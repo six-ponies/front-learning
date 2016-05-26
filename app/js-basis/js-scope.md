@@ -18,9 +18,10 @@ bar();
 ```
 var a = 1;
 function b() {
+    a();
     a = 10;
     return;
-    function a(){}
+    function a(){console.log('yes')}
 }
 b();
 alert(a);
@@ -123,8 +124,8 @@ test();
 
 ```
 function test() {
-    var foo, bar;
-    bar = function() {
+    var foo;
+    function bar() {
         alert("this will run!");
     }
     foo();
