@@ -27,7 +27,7 @@ function do_something() {
     console.log(y);     // 2
 }
 
-// 在var定义前使用变量会显示未定义
+// 在var定义前使用变量会显示未定义（变量声明提升）
 function do_something_var() {
     console.log(y); // undefined
     var y = 2;
