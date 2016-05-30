@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Delegation</title>
+</head>
+<body>
+    <ul class="no-delegation">
+        <li id="list-1">1</li>
+        <li id="list-2">2</li>
+        <li id="list-3">3</li>
+        <li id="list-4">4</li>
+        <li id="list-5">5</li>
+    </ul>
+    <button id="no-delegation-adder">add li to no-delegation</button>
+
+    <ul class="delegation">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ul>
+    <button id="delegation-adder">add li to delegation</button>
+    <script type="text/javascript">
+        /* 不使用事件代理 */
+        var noDelegation = document.getElementsByClassName('no-delegation'),
+            noDelegationChildren = noDelegation[0].getElementsByTagName('li'),
+            noDelegationLength = noDelegationChildren.length,
+            noDelegationAdder = document.getElementById('no-delegation-adder');
+        for(var i = 0; i < noDelegationChildren.length; i ++) {
+            noDelegationChildren[i].addEventListener('click', function (event) {
+                console.log('No-delegation list item ' + event.target.innerText + ' was clicked!');
+            })
+        }
+        // 当点击“add li to no-delegation”按钮时，给no-delegation内添加li元素
+        noDelegationAdder.addEventListener('click', function(event) {
+            ++noDelegationLength;
+            var liString = '<li id="list-' + noDelegationLength + '">' + noDelegationLength + '</li>';
+            // 如果只是添加了li元素而没有重新绑定事件，新的li元素将不会有点击效果
+            noDelegation[0].insertAdjacentHTML('beforeend', liString);
+
+            // 为了使新加的标签同样具有点击效果，我们需要重新给新添加的绑定事件
+            document.getElementById('list-' + noDelegationLength).addEventListener('click', function(event) {
+                console.log('No-delegation list item ' + event.target.innerText + ' was clicked!');
+            })
+        })
+
+        /* 使用事件代理 */
+        var Delegation = document.getElementsByClassName('delegation'),
+            DelegationChildren = Delegation[0].getElementsByTagName('li'),
+            DelegationLength = DelegationChildren.length,
+            DelegationAdder = document.getElementById('delegation-adder');
+
+        // 给父元素添加事件
+        Delegation[0].addEventListener('click', function(event) {
+            // 判断被事件源是否是 “LI” 标签
+            if(event.target && event.target.nodeName == "LI") {
+                console.log('Delegation list item ' + event.target.innerText + ' was clicked!');
+            } 
+        }, false)
+
+        DelegationAdder.addEventListener('click', function(event) {
+            ++noDelegationLength;
+            var liString = '<li id="list-' + noDelegationLength + '">' + noDelegationLength + '</li>';
+            // 此处只需要添加了li元素，而不需要重新绑定事件，新的li元素都会有点击效果
+            Delegation[0].insertAdjacentHTML('beforeend', liString);
+        })
+    </script>
+</body>
+</html>
