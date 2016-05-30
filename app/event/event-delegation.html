@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Event Delegation</title>
+    <script type="text/javascript" src="/bower_components/zepto/zepto.js"></script>
 </head>
 <body>
     <ul class="no-delegation">
@@ -22,6 +23,15 @@
         <li>5</li>
     </ul>
     <button id="delegation-adder">add li to delegation</button>
+
+    <ul class="zepto">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ul>
+    <button id="zepto-adder">add li to zepto</button>
     <script type="text/javascript">
         /* 不使用事件代理 */
         var noDelegation = document.getElementsByClassName('no-delegation'),
@@ -54,7 +64,7 @@
 
         // 给父元素添加事件
         Delegation[0].addEventListener('click', function(event) {
-            // 判断被事件源是否是 “LI” 标签
+            // 判断1事件源是否是 “LI” 标签
             if(event.target && event.target.nodeName == "LI") {
                 console.log('Delegation list item ' + event.target.innerText + ' was clicked!');
             } 
@@ -62,9 +72,19 @@
 
         DelegationAdder.addEventListener('click', function(event) {
             ++noDelegationLength;
-            var liString = '<li id="list-' + noDelegationLength + '">' + noDelegationLength + '</li>';
+            var liString = '<li>' + noDelegationLength + '</li>';
             // 此处只需要添加了li元素，而不需要重新绑定事件，新的li元素都会有点击效果
             Delegation[0].insertAdjacentHTML('beforeend', liString);
+        })
+
+        // 'li'不能少，其保证了响应事件处理函数的时候，事件源是我们想要的"LI"元素
+        $('.zepto').on('click', 'li', function(event) {
+            console.log('zepto list item ' + event.target.innerText + ' was clicked!');
+        })
+        $('#zepto-adder').on('click', function(event) {
+            var length = $('.zepto li').length;
+            var liString = '<li>' + ++length + '</li>';
+            $('.zepto').append(liString);
         })
     </script>
 </body>

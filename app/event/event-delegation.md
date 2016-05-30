@@ -76,3 +76,53 @@ DelegationAdder.addEventListener('click', function(event) {
 ```
 与之前的代码不同，此处我们只是给“LI”元素的父元素添加了事件，但是我们在事件处理函数中判断了该事件触发时的事件源是否是我们需要“LI”元素，如果正好能匹配的上，则相应接下来的代码，否则就什么都不做。例子很简单，但是通过了这个简单的例子，我们简化了事件绑定时繁琐操作，尤其是在需要动态操作DOM结构的时候。（以上例子在chrome浏览器上测试过，可以直接使用。也可以直接拷贝event-delegation.html中的代码测试）
 
+#Zepto中的“事件代理”
+看过了简单的“事件代理”，我们再来看看Zepto是如何实现“事件代理”的。
+
+```
+$.fn.on = function(event, selector, data, callback, one) {
+    var autoRemove, delegator, $this = this
+
+    /* 此处省略若干行代码 */
+
+    return $this.each(function(_, element) {
+        // 如果是一次性事件，则先删除该事件，然后执行一次该事件
+        if (one) autoRemove = function(e) {
+            remove(element, e.type, callback)
+            return callback.apply(this, arguments)
+        }
+
+        /* 如果定义了选择器，则定义一个代理，保证了事件在匹配该selector选择器的元素内的子元素上被触发时才会执行事件处理函数。事件冒泡到element的时候，判断离事件源最近的能匹配selector的父辈元素（这个元素必须是element的后代元素)是否存在，如果存在，则对事件进行一定的封装后执行事件处理函数，否则什么都不干 */
+        if (selector) delegator = function(e) {
+            // 以element为界限,以该事件源为起点，找到最近的能匹配selector的父辈元素
+            // closest(selector, [context]) 从元素本身开始，逐级向上级元素匹配，并返回最先匹配selector的元素。
+            // 如果给定context节点参数，那么只匹配该节点的后代元素
+            var evt, match = $(e.target).closest(selector, element).get(0)
+                // 如果找到了match，并且不等于element
+            if (match && match !== element) {
+                // 创建一个代理事件，并为该事件对象扩展currentTarget和liveFired属性
+                evt = $.extend(createProxy(e), {
+                    currentTarget: match,
+                    liveFired: element
+                })
+
+                // slice.call(arguments, 1)就是Array.prototype.slice.call(arguments, 1)，
+                // 其作用就是将arguments这个Array-like对象转换成真正的Array对象
+                return (autoRemove || callback).apply(match, [evt].concat(slice.call(arguments, 1)))
+            }
+        }
+
+        add(element, event, callback, data, selector, delegator || autoRemove)
+    })
+}
+```
+上述是Zepto事件绑定函数on的部分代码，因为我们只关注“事件代理”这部分，因此我们把焦点移动到if(selector)这段代码块中。
+当我们使用on方法给某个DOM对象绑定事件时，我们可以考虑是否传入selector参数，如果传入该参数，则表明我们需要事件代理，因此if(selector)这段代码会生成一个特殊的事件响应函数delegator。这个delegator会保证我们传入的处理函数在特定的情况下才会被执行。
+例如，我们给document这个对象绑定一个click事件：
+```
+function handler(e){
+    console.log(e.target);
+}
+$(document).on('click', '.test', handler(e))。
+```
+当我们在文档的任何地方点击鼠标后，事件通过不断的传递，并最终冒泡到document对象上，此时，之前生成的特殊的事件响应函数delegator会被执行。在这个delegator中，它会进行一系列的判断（详情请见代码注解），如果在document与事件源（e.target）存在某个匹配'.test'的元素，则执行我们给定的handler处理函数，否则，什么都不干。需要注意的是，此时出入的参数已经不再是原生的事件对象，而是经过一层包装后的对象
