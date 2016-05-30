@@ -328,15 +328,18 @@
                 return callback.apply(this, arguments)
             }
 
-            // 如果定义了选择器，则定义一个代理，保证了事件在匹配该selector选择器的元素上发起时才会被触发
+            // 如果定义了选择器，则定义一个代理，保证了事件在匹配该selector选择器的元素内的子元素上被触发时才会执行事件处理函数
+            // 事件冒泡到element的时候，判断离事件源最近的能匹配selector的父辈元素（这个元素必须是element的后代元素)是否存在，
+            // 如果存在，则对事件进行一定的封装后执行事件处理函数，否则什么都不干
             if (selector) delegator = function(e) {
-                // 以element为界限,以该事件源为起点，找到最近的能匹配selector的父辈元素
+                // 以element为界限,以该事件源元素为起点，找到最近的能匹配selector的父辈元素
                 // closest(selector, [context]) 从元素本身开始，逐级向上级元素匹配，并返回最先匹配selector的元素。
                 // 如果给定context节点参数，那么只匹配该节点的后代元素
                 var evt, match = $(e.target).closest(selector, element).get(0)
                     // 如果找到了match，并且不等于element
                 if (match && match !== element) {
-                    // 创建一个代理事件，并为该事件对象扩展currentTarget和liveFired属性
+                    // 创建一个代理事件，并为该事件对象扩展currentTarget和liveFired属性，伪装事件的currentTarget就是当前的匹配的父元素
+                    // 实际的currentTarget是element所指向的那个元素，也就是这里的liveFired
                     evt = $.extend(createProxy(e), {
                         currentTarget: match,
                         liveFired: element
