@@ -32,25 +32,25 @@
 ###normal
 默认属性值，告诉浏览器自己来决定行高，与元素字体关联。
 
-###<number>
+### <number>
 用数值作为行高值。计算方法：当前元素字体大小（font-size） * number
 假设当前元素样式为：style="font-size: 20px;line-height: 1.5"，
 则其行高line-height = 1.5 * 20px = 30px;
 
-###<length>
+### <length>
 使用具体长度值作为行高值。如：
 line-height: 1.5em;
 line-height: 1.5rem;
 line-height: 30px;
 line-height: 30pt;
 
-###<percentage>
+### <percentage>
 使用百分比作为行高值。如：
 line-height: 150%;
 假设当前元素样式为：style="font-size: 150%;line-height: 1.5"，
 则其行高line-height = 150% * 20px = 30px;
 
-###inherit
+### inherit
 行高可以继承。
 
 ###line-height:1.5,line-height:150%,line-height:1.5em的区别？？
