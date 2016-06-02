@@ -1,4 +1,4 @@
-# front-test
+# front-learning
 This is a collection of CSS, HTML and JS tricks
 
 ## Quick start
