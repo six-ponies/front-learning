@@ -16,11 +16,11 @@
 
 ###行高（line-height）
 行高(line-height) = 内容区域(content-area)高度 +  行间距(leading)
-需要注意的是：*内容区域(content-area)不一定等于字体大写(font-size)。据我所知，"STHeiti"，"simsun"字体的大小与内容区域一致。*
+需要注意的是：*内容区域(content-area)不一定等于字体大小(font-size)。据我所知，"STHeiti"，"simsun"字体的大小与内容区域一致。*
 
 ###行框（line box）高度
 行框盒子(line box)的高度由如下决定：
-1、首先，计算行框盒子(line-box)内的每个内联水平(inline-level)盒子（包括了内联盒子和内联块）的高度。对于可替换元素(replaced elements, such as "img")，内联块(inline-block)和内嵌表格(inline-table)，他们的高度就是他们的边框盒（margin box）的高度。对于内联盒子（inline boxes），高度就是他们的行高（line-height）。
+1、首先，计算行框盒子(line box)内的每个内联水平(inline-level)盒子（包括了内联盒子和内联块）的高度。对于可替换元素(replaced elements, such as "img")，内联块(inline-block)和内嵌表格(inline-table)，他们的高度就是他们的边框盒（margin box）的高度。对于内联盒子（inline boxes），高度就是他们的行高（line-height）。
 *有一点需要注意，对于内联盒子来说，它的行高在浏览器中是看不见的，有时候我们会忽略它的存在*
 2、其次，内联水平盒子会根据各个“vertical-align”属性被垂直对齐起来。由于CSS2.1并没有规定行框盒子（line box）基线（baseline）的位置，因此，如果只是简单的按照将内联水平盒子垂直对齐起来，将会有很多种不同的表现形式，所以这里的对齐需要满足一个条件，那就是所有内联水平盒子对齐后，包含他们的行框盒子的高度必须是所有情况中最小的高度。
 3、最后，行框盒子的高度就是所有盒子中最高上边框与最低下边框之间的距离。
@@ -42,7 +42,7 @@
 line-height: 1.5em;
 line-height: 1.5rem;
 line-height: 30px;
-line-height: 30pt;
+line-height: 30pt; 
 
 ###percentage
 使用百分比作为行高值。如：
@@ -55,7 +55,7 @@ line-height: 150%;
 
 ###line-height:1.5,line-height:150%,line-height:1.5em的区别？？
 line-height: 1.5， 所有可继承元素根据当前元素的font-size重新计算行高；
-line-height: 150%/1.5em，当前元素根据font-size计算行高，下面的元素如果继承行高，则是就是此时的行高。
+line-height: 150%/1.5em，当前元素根据font-size计算行高，后代元素如果继承行高，则就是此时的行高。
 
 
 
