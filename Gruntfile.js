@@ -84,6 +84,8 @@ module.exports = function(grunt) {
           middleware: function(connect) {
             return [
               connect.static('.tmp'),
+              connect().use('/css-basis/line-height&vertical-align/bower_components', connect.static('./bower_components')),
+              connect().use('/js-basis/jquery/bower_components', connect.static('./bower_components')),
               connect().use('/bower_components', connect.static('./bower_components')),
               connect().use('/fonts', connect.static('<%= config.app %>/bower_components/bootstrap/dist/fonts')),
               connect.static(config.app)
