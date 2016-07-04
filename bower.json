@@ -4,7 +4,9 @@
   "dependencies": {
     "bootstrap": "~3.2.0",
     "zepto": "^1.1.6",
-    "reveal.js": "^3.3.0"
+    "reveal.js": "^3.3.0",
+    "js-mindmap": "kennethkufluk/js-mindmap",
+    "jquery-ui": "^1.11.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",
