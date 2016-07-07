@@ -5,8 +5,8 @@
             "HTML5": "http//:www.baidu.com"
         },
         "css": {
-            "clearfix": "front-learning/css-basis/clearfix/clearfix.html",
-            "Line-height and vertical-align": "front-learning/css-basis/line-height&vertical-align/line-height&vertical-align.html"
+            "clearfix": "css-basis/clearfix/clearfix.html",
+            "Line-height and vertical-align": "css-basis/line-height&vertical-align/line-height&vertical-align.html"
         },
         "JS基础": {
             "nodejs": "http//:www.baidu.com"
