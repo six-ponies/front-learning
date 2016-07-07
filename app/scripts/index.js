@@ -87,7 +87,8 @@ $(document).ready(function() {
     $('a').dblclick(function(event) {
       var url = $(event.target).attr('href');
       console.log(url);
-      window.open(url, '_blank');
+      if (url && url.length && url !== '/')
+        window.open(url, '_blank');
     });
   });
 
