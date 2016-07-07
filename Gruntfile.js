@@ -213,7 +213,7 @@ module.exports = function(grunt) {
     wiredep: {
       app: {
         ignorePath: /^\/|\.\.\//,
-        src: ['<%= config.app %>/index.html', '<%= config.app %>/**/*.html'],
+        src: ['<%= config.app %>/**/*.html'],
         exclude: ['bower_components/bootstrap/dist/js/bootstrap.js']
       },
       less: {
@@ -228,8 +228,8 @@ module.exports = function(grunt) {
         src: [
           '<%= config.dist %>/scripts/{,**/}*.js',
           '<%= config.dist %>/styles/{,**/}*.css',
-          // '<%= config.dist %>/images/{,**/}*.*',
-          '<%= config.dist %>/styles/fonts/{,**/}*.*',
+          // '<%= config.dist %>/images/{,*/}*.*',
+          '<%= config.dist %>/styles/fonts/{,*/}*.*',
           '<%= config.dist %>/*.{ico,png}'
         ]
       }
@@ -298,7 +298,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '<%= config.dist %>',
-          src: '{,**/}*.html',
+          src: '{,*/}*.html',
           dest: '<%= config.dist %>'
         }]
       }
@@ -342,8 +342,7 @@ module.exports = function(grunt) {
             '*.{ico,png,txt}',
             'images/{,*/}*.webp',
             '{,**/}*.html',
-            'styles/fonts/{,*/}*.*',
-            'dataBase/*.json'
+            'styles/fonts/{,*/}*.*'
           ]
         }, {
           expand: true,
@@ -366,19 +365,9 @@ module.exports = function(grunt) {
         'imagemin',
         'svgmin'
       ]
-    },
-    replace: {
-      run: {
-        options: {
-          regx: [/href="styles/g, /src="scripts/g],
-          replacement: ['href="../../styles', 'src="../../scripts']
-        },
-        src: ['<%= config.dist %>/*/*/*.html']
-      }
     }
   });
 
-  grunt.loadTasks('tasks');
 
   grunt.registerTask('serve', 'start the server and preview your app, --allow-remote for remote access', function(target) {
     if (grunt.option('allow-remote')) {
@@ -430,7 +419,6 @@ module.exports = function(grunt) {
     'copy:dist',
     'filerev',
     'usemin',
-    'replace'
     // 'htmlmin'
   ]);
 
