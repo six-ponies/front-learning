@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>jQuery Deferred</title>
-    <!-- build:css(.) styles/vendor.css -->
+    <!-- build:css(.) styles/jquery-vendor.css -->
     <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css" />
     <link rel="stylesheet" href="bower_components/reveal.js/css/theme/night.css" />
     <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css" />
     <!-- endbuild -->
-    <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="../../styles/main.css">
-    <link rel="stylesheet" href="../../styles/deferred.css">
+    <!-- build:css(.tmp) styles/jquery-main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/deferred.css">
 
     <!-- endbuild -->
 </head>
@@ -320,11 +320,14 @@ defer('defer1', 2000).then(function() {
         </div>
     </div>
     
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- <script src="bower_components/zepto/zepto.js"></script> -->
+    <!-- build:js(.) scripts/jquery-vendor.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/headjs/dist/1.0.0/head.min.js"></script>
     <script src="bower_components/reveal.js/js/reveal.js"></script>
+    <script src="bower_components/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="bower_components/reveal.js/plugin/notes/notes.js"></script>
+    <script src="bower_components/reveal.js/plugin/zoom-js/zoom.js"></script>
+    
     <!-- endbuild -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -337,8 +340,7 @@ defer('defer1', 2000).then(function() {
       ga('create','UA-XXXXX-X');ga('send','pageview');
     </script>
 
-    <!-- build:js({app,.tmp}) scripts/main.js -->
-    <script src="../../scripts/main.js">
+    <script>
         // Full list of configuration options available here:
         // https://github.com/hakimel/reveal.js#configuration
         Reveal.initialize({
@@ -355,42 +357,6 @@ defer('defer1', 2000).then(function() {
             // Parallax scrolling
             // parallaxBackgroundImage: "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg",
             // parallaxBackgroundSize: "2100px 900px",
-
-            // Optional libraries used to extend on reveal.js
-            dependencies: [{
-                src: "../../bower_components/reveal.js/lib/js/classList.js",
-                condition: function() {
-                    return !document.body.classList;
-                }
-            }, {
-                src: "../../bower_components/reveal.js/plugin/markdown/marked.js",
-                condition: function() {
-                    return !!document.querySelector("[data-markdown]");
-                }
-            }, {
-                src: "../../bower_components/reveal.js/plugin/markdown/markdown.js",
-                condition: function() {
-                    return !!document.querySelector("[data-markdown]");
-                }
-            }, {
-                src: "../../bower_components/reveal.js/plugin/highlight/highlight.js",
-                async: true,
-                callback: function() {
-                    hljs.initHighlightingOnLoad();
-                }
-            }, {
-                src: "../../bower_components/reveal.js/plugin/zoom-js/zoom.js",
-                async: true,
-                condition: function() {
-                    return !!document.body.classList;
-                }
-            }, {
-                src: "../../bower_components/reveal.js/plugin/notes/notes.js",
-                async: true,
-                condition: function() {
-                    return !!document.body.classList;
-                }
-            }]
         });
     </script>
 
@@ -415,7 +381,7 @@ defer('defer1', 2000).then(function() {
         var promise2 = defer1.then(function() {
             return defer('defer3', 5000);
         });
-        promise2.then(fn1);
+        promise2.then([fn1, fn1]);
         // 输出是为了作比较
         defer1.done(fn1); 
 
@@ -423,6 +389,5 @@ defer('defer1', 2000).then(function() {
         //defer1:is resolved at Tue Jun 28 2016 22:58:01 GMT+0800 (CST)
         //deferred.html:363 defer3:is resolved at Tue Jun 28 2016 22:58:06 GMT+0800 (CST)
     </script>
-    <!-- endbuild -->
 </body>
 </html>

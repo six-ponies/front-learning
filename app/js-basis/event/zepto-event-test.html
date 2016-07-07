@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Zepto Event Tests</title>
     <script type="text/javascript" src="/bower_components/zepto/zepto.js"></script>
+    <script type="text/javascript" src="../zepto-anaylysis/touch.js"></script>
     <style type="text/css">
         input{
             border: 1px solid #222222;
@@ -75,6 +76,10 @@
         $('body').append('<img src="1.jpg" />');
         $('img').on('error',function(e){
             console.log('yes');
+        })
+        $(document).on('tap singleTap doubleTap', function(e){
+
+            console.log(e.type + ' event is triggered at ' + (new Date()).getTime());
         })
     </script>
 </body>

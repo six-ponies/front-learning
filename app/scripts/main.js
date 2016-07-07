@@ -1,3 +1,4 @@
+'use strict';
 // Full list of configuration options available here:
 // https://github.com/hakimel/reveal.js#configuration
 Reveal.initialize({
@@ -90,10 +91,10 @@ $.fn.rdo = function() {
             });
 
             $this.on('focus', function() {
-                $l.addClass('focus')
+                $l.addClass('focus');
             });
             $this.on('blur', function() {
-                $l.removeClass('focus')
+                $l.removeClass('focus');
             });
 
 
@@ -132,6 +133,6 @@ $(function() {
             ghostPadding = container.children('.ghost-padding');
         $('#lineHeightValue').text(lineHeight);
         ghostPadding.css('line-height', lineHeight + 'px');
-        console.log(ghostPadding.css('font-size'))
+        console.log(ghostPadding.css('font-size'));
     })
 })

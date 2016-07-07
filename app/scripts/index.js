@@ -39,7 +39,7 @@ $(document).ready(function() {
       str += '</ul>';
     }
     recursive(data);
-    // $('body').prepend(str);
+    $('body').prepend(str);
 
     // enable the mindmap in the body
     $('body').mindmap();
@@ -74,6 +74,7 @@ $(document).ready(function() {
           $(node.content).each(function() {
             this.show();
           });
+          console.log(node.name);
         }
       });
       $(this).hide();
@@ -83,7 +84,11 @@ $(document).ready(function() {
     $('body>ul>li>ul').each(function() {
       $('>li', this).each(addLI);
     });
-
+    $('a').dblclick(function(event) {
+      var url = $(event.target).attr('href');
+      console.log(url);
+      window.open(url, '_blank');
+    });
   });
 
 });
