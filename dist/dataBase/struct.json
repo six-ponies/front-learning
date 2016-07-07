@@ -1,0 +1,23 @@
+{
+    "frontend": {
+        "html": {
+            "HTML": "http//:www.baidu.com",
+            "HTML5": "http//:www.baidu.com"
+        },
+        "css": {
+            "clearfix": "/css-basis/clearfix/clearfix.html",
+            "Line-height and vertical-align": "/css-basis/line-height&vertical-align/line-height&vertical-align.html"
+        },
+        "JS基础": {
+            "nodejs": "http//:www.baidu.com"
+        },
+        "前端框架": {
+            "AngularJS": {
+                "scope生命周期": {
+                    "Notes On AngularJS Scope Life-Cycle": "http://onehungrymind.com/notes-on-angularjs-scope-life-cycle/",
+                    "官方文档--Scopes": "https://docs.angularjs.org/guide/scope"
+                }
+            }
+        }
+    }
+}
