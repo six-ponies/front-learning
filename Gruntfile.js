@@ -213,7 +213,7 @@ module.exports = function(grunt) {
     wiredep: {
       app: {
         ignorePath: /^\/|\.\.\//,
-        src: ['<%= config.app %>/index.html'],
+        src: ['<%= config.app %>/index.html', '<%= config.app %>/**/*.html'],
         exclude: ['bower_components/bootstrap/dist/js/bootstrap.js']
       },
       less: {
@@ -226,10 +226,10 @@ module.exports = function(grunt) {
     filerev: {
       dist: {
         src: [
-          '<%= config.dist %>/scripts/{,*/}*.js',
-          '<%= config.dist %>/styles/{,*/}*.css',
-          '<%= config.dist %>/images/{,*/}*.*',
-          '<%= config.dist %>/styles/fonts/{,*/}*.*',
+          '<%= config.dist %>/scripts/{,**/}*.js',
+          '<%= config.dist %>/styles/{,**/}*.css',
+          // '<%= config.dist %>/images/{,**/}*.*',
+          '<%= config.dist %>/styles/fonts/{,**/}*.*',
           '<%= config.dist %>/*.{ico,png}'
         ]
       }
@@ -242,7 +242,7 @@ module.exports = function(grunt) {
       options: {
         dest: '<%= config.dist %>'
       },
-      html: '<%= config.app %>/index.html'
+      html: '<%= config.app %>/**/*.html'
     },
 
     // Performs rewrites based on rev and the useminPrepare configuration
@@ -254,8 +254,8 @@ module.exports = function(grunt) {
           '<%= config.dist %>/styles'
         ]
       },
-      html: ['<%= config.dist %>/{,*/}*.html'],
-      css: ['<%= config.dist %>/styles/{,*/}*.css']
+      html: ['<%= config.dist %>/{,**/}*.html'],
+      css: ['<%= config.dist %>/styles/{,**/}*.css']
     },
 
     // The following *-min tasks produce minified files in the dist folder
@@ -298,7 +298,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: '<%= config.dist %>',
-          src: '{,*/}*.html',
+          src: '{,**/}*.html',
           dest: '<%= config.dist %>'
         }]
       }
@@ -341,8 +341,9 @@ module.exports = function(grunt) {
           src: [
             '*.{ico,png,txt}',
             'images/{,*/}*.webp',
-            '{,*/}*.html',
-            'styles/fonts/{,*/}*.*'
+            '{,**/}*.html',
+            'styles/fonts/{,*/}*.*',
+            'dataBase/*.json'
           ]
         }, {
           expand: true,
@@ -365,9 +366,19 @@ module.exports = function(grunt) {
         'imagemin',
         'svgmin'
       ]
+    },
+    replace: {
+      run: {
+        options: {
+          regx: [/href="styles/g, /src="scripts/g],
+          replacement: ['href="../../styles', 'src="../../scripts']
+        },
+        src: ['<%= config.dist %>/*/*/*.html']
+      }
     }
   });
 
+  grunt.loadTasks('tasks');
 
   grunt.registerTask('serve', 'start the server and preview your app, --allow-remote for remote access', function(target) {
     if (grunt.option('allow-remote')) {
@@ -419,7 +430,8 @@ module.exports = function(grunt) {
     'copy:dist',
     'filerev',
     'usemin',
-    'htmlmin'
+    'replace'
+    // 'htmlmin'
   ]);
 
   grunt.registerTask('default', [
