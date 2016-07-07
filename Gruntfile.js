@@ -366,10 +366,19 @@ module.exports = function(grunt) {
         'imagemin',
         'svgmin'
       ]
+    },
+    replace: {
+      run: {
+        options: {
+          regx: [/href="styles/g, /scripts="scripts/],
+          replacement: ['href="../../styles', 'scripts="../../scripts']
+        },
+        src: ['<%= config.dist %>/**/*.html']
+      }
     }
   });
 
-
+  grunt.loadTasks('tasks');
   grunt.registerTask('serve', 'start the server and preview your app, --allow-remote for remote access', function(target) {
     if (grunt.option('allow-remote')) {
       grunt.config.set('connect.options.hostname', '0.0.0.0');
@@ -420,6 +429,7 @@ module.exports = function(grunt) {
     'copy:dist',
     'filerev',
     'usemin',
+    'replace'
     // 'htmlmin'
   ]);
 
