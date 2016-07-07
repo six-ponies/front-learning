@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery Deferred</title>
+    <link rel="stylesheet" href="styles/jquery-vendor.7a70c91e.css">
+    <link rel="stylesheet" href="styles/jquery-main.b0712483.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h2>jQuery Deferred 源码解读</h2>
+            </section>
+            <section>
+                <h3>什么是Deferred？</h3>
+            </section>
+            <section>
+                <h4>
+                    首先，JS是单线程语言。单线程在执行代码时时一步一步按照顺序来的，前面的必须处理好，后面的才会执行。如果有一段代码需要执行很长时间，那么它后面的代码需要等待这么长时间才能执行。我们可以把这个理解为阻塞。为了解决这个问题，JS引入了异步的概念。
+                </h4>
+            </section>
+            <section>
+                <h3>传统的异步操作容易陷入回调地狱（Callback Hell）</h3>
+                <pre><code>
+var url = '/test/api';
+$.get(url, function(data) {
+    $.get(data.url, function(data) {
+        $.get(data.url, fucntion(data)){
+            ...
+        }
+    })
+})
+                </code></pre>
+            </section>
+            <section>
+                <h3>Promise/A规范</h3>
+                <p class="fragment align-justify" data-fragment-index="1">         
+                    promise的核心思想是其本身的状态代表着异步操作的结果（好像不是很好理解）。一个promise有三种状态：等待（pending）、完成（fulfilled）、拒绝（rejected）。一旦一个promise的状态变为完成或者拒绝，那么这个promise的状态将不能变换。
+                </p>
+            </section>
+            <section>
+                <h3>Deferred 是jQuery团队设计的一种处理异步的模型，其实现了Promise/A规范</h3>
+            </section>
+
+            <section>
+                <section>
+                    <h3>Deferred的订阅动作，发布动作及对应的状态</h3>
+                    <div class="three-colomn">
+                        <p>
+                            <span>"订阅"</span>=====> <span>"发布"</span> =====> <span>"状态"</span>
+                        </p>
+                        <p>
+                            <span>"done"</span>=====> <span>"resolve"</span> =====> <span>"resolved"</span> 
+                        </p>
+                        <p>
+                            <span>"fail"</span>=====> <span>"reject"</span> =====> <span>"rejected"</span>
+                        </p>
+                        <p>
+                            <span>"progress"</span>=====> <span>"notify"</span> =====> <span>无</span>
+                        </p>
+                    </div>
+                </section>
+                <section>
+                    <h3>源码是这样的：</h3>
+                    <pre><code>
+var tuples = [
+
+    // action, add listener, listener list, final state
+    // memory 是关键参数
+    ["resolve", "done", jQuery.Callbacks("once memory"), "resolved"],
+    ["reject", "fail", jQuery.Callbacks("once memory"), "rejected"],
+    ["notify", "progress", jQuery.Callbacks("memory")]
+]
+                    </code></pre>
+                </section>
+            </section>
+
+            <section>
+                <h3>定义promise对象和deferred对象</h3>
+                <pre><code>
+// 定义初始状态为等待
+state = "pending",
+promise = {
+    /*
+     * 获取 state 方法
+     * @returns {String}
+     */
+    state: function() {
+        return state;
+    },
+
+    /*
+     * always方法。无论是执行成功（resolve）还是失败（reject），都会执行指定的回调函数
+     */
+    always: function() {
+        deferred.done(arguments).fail(arguments);
+        return this;
+    },
+
+    // 后面接着讲
+    then: function( /* fnDone, fnFail, fnProgress */ ) {
+      
+    },
+
+    // Get a promise for this deferred
+    // If obj is provided, the promise aspect is added to the object
+    promise: function(obj) {
+        return obj != null ? jQuery.extend(obj, promise) : promise;
+    }
+},
+// 定义一个deferred对象。此对象会在后续通过调用promise对象的promise方法初始化
+deferred = {};
+                </code></pre>
+            </section>
+            <section>
+                <h3>初始化promise的主要属性</h3>
+                <pre><code>
+// Keep pipe for back-compat
+// 保持向后兼容
+promise.pipe = promise.then;
+
+// Add list-specific methods
+// 遍历tuples数组，为deferred对象和promise对象添加必要的方法
+jQuery.each(tuples, function(i, tuple) {
+    var list = tuple[2], // 获取一个jQuery.Callbacks对象
+        stateString = tuple[3]; // stateString = 'resolved' | 'rejected' | undefined
+
+    // promise[ done | fail | progress ] = list.add
+    // 将添加回调函数的方法加到promise对象中
+    // promise.done()会往“done”所对应的Callback对象中添加回调函数
+    // promise.fail() 和 promise.progress() 亦然
+    promise[tuple[1]] = list.add;
+
+    // Handle state
+    if (stateString) {
+        // 对于tuples[0]和tuples[1]，由于其状态存在
+        // 因此需要给他们对应的回调函数列表中添加三个回调函数
+        // 1、修改Deferred对象状态
+        // 2、调用另一个操作对应的回调列表的disable方法，以保证状态的不可变性
+        // 如果：Deferred对象执行了resolve方法，则fail对应的回调列表将被禁用
+        // 3、调用代表处理中（progress所对应的）的回调列表的lock方法
+        // 为什么一个用lock，一个用disable？？
+        list.add(function() {
+
+            // state = [ resolved | rejected ]
+            state = stateString;
+
+            // [ reject_list | resolve_list ].disable; progress_list.lock
+        }, tuples[i ^ 1][2].disable, tuples[2][2].lock);
+    }
+
+    // 将三个Callback对象的fire()/fireWith()分别赋值给deferred对象   
+    // deferred[ resolve | reject | notify ]
+    deferred[tuple[0]] = function() {
+        deferred[tuple[0] + "With"](this === deferred ? promise : this, arguments);
+        return this;
+    };
+    deferred[tuple[0] + "With"] = list.fireWith;
+});
+
+// Make the deferred a promise
+// 将promise对象扩展到deferred对象上
+// deferred对象比promise对象多了发布方法，及resolve，reject，notify方法
+promise.promise(deferred);
+
+// Call given func if any
+// 这个函数在调用then方法的时候会有用到
+if (func) {
+    func.call(deferred, deferred);
+}
+
+// All done!
+// 完成，返回deferred对象
+return deferred;
+                </code></pre>
+            </section>
+            <section>
+                <section>
+                     <h3>精髓的then方法</h3>
+                <pre><code>
+/*
+ * then 方法
+ * @param [fn, fn, fn], 每个函数分别对应fnDone， fnFail, fnProgress
+ * @return {Object} 返回一个promise对象 
+ */
+then: function( /* fnDone, fnFail, fnProgress */ ) {
+    // 获得回调函数数组
+    var fns = arguments;
+
+    // 为了理清楚个Deferred对象之间的互相引用关系，这里假设第一个调用then方法的
+    // Deferred对象为defer1
+
+    // 调用Deferred工厂函数，生成一个新的Deferred对象，假设为defer2
+    // 由于在调用Deferred函数时传入了一个函数function(newDefer){...}， 
+    // 因此在初始化该defer2的过程中就会调用该函数，
+    // 此时，函数的上下文 this = defer2, newDefer = defer2
+    // 在完成了初始化后调用promise()方法返回与defer2对象对应的promise对象
+    return jQuery.Deferred(function(newDefer) {
+        // 遍历tuples数组
+        jQuery.each(tuples, function(i, tuple) {
+            var fn = jQuery.isFunction(fns[i]) && fns[i];
+
+            // 往deferred对象的回调列表中添加一个回调函数
+            // 注意：此处的deferred对象是一开始的defer1对象，而不是新建的defer2对象
+            // defer['done']中添加了"fnDone"函数
+            // defer['fail']中添加了"fnFail"函数
+            // defer['progress']中添加了"fnProgress"函数
+            deferred[tuple[1]](function() {
+                // 这里的 "this" 和 "arguments" 是通过调用
+                // defer1.resolve | reject | notify(arguments)传递进来的
+                var returned = fn && fn.apply(this, arguments);
+
+                // fn执行后有返回值，并且该返回值是一个promise对象或者deferred对象
+                if (returned && jQuery.isFunction(returned.promise)) {
+                    returned.promise()
+                        // 给返回的promise对象的回调列表中添加新的回调函数
+                        // 该回调函数会执行defer2的resolve方法
+                        .progress(newDefer.notify)
+                        .done(newDefer.resolve)
+                        .fail(newDefer.reject);
+                } else {
+                    // 如果fn执行后返回的是一般的值或者fn==false，则直接调用defer2的resolveWith方法
+                    // 如果fn是个可执行函数，则在调用resolveWith方法时会把fn的执行结果传入，否则直接利用
+                    // 之前参数arguments，也就是在调用defer1.resolve(arguments)时传入的参数
+                    newDefer[tuple[0] + "With"](
+                        this === promise ? newDefer.promise() : this,
+                        fn ? [returned] : arguments
+                    );
+                }
+            });
+        });
+        fns = null;
+    }).promise();
+}
+                </code></pre>
+                </section>
+                <section>
+                    <h3>then 方法举例值filter</h3>
+                    <pre><code>
+var defer = $.Deferred(),
+    filterfn = function( value ) {
+        return value * 2;
+    },
+    // 调用then方法后，defer对象中的与‘resolve’对应的回调函数列表中多了一个新的回调函数
+    // filtered是一个新的promise对象
+
+    filtered = defer.then(filterfn);
+// 调用defer.resolve(5)方法后，新添加的回调函数会被执行，其执行顺序是
+// 1、执行filterfn（5），此时，returned = 10
+// 2、执行filtered所对应的deferred对象的resolveWith（10）方法
+defer.resolve( 5 );
+
+// 由于filtered所对应的deferred对象已经被resolve了，所以直接执行回调函数
+// Value is ( 2*5 = ) 10: 10
+// 这里调用filtered.then(function(value){...})也是一样的结果
+filtered.done(function( value ) {
+  console.log( "Value is ( 2*5 = ) 10: " + value );
+});
+// Value is ( 2*5 = ) 10: 10
+// Value is ( 2*10 = ) 20: 20
+filtered.then(function( value ) {
+    console.log("Value is (2*5 = ) 10: " + value);
+    return value * 2;
+}).then(function( value ) {
+    console.log("Value is (2*10 = ) 20: " + value);
+})
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>then 方法举例之链式调用</h3>
+                    <pre><code>
+var fn1 = function(str){
+    console.log(str + ':' + 'is resolved at ' + new Date());
+};
+function defer(value, interval) {
+    var defer = $.Deferred();
+    setTimeout(function(){
+        defer.resolve(value);
+    }, interval);
+    return defer;
+}
+var defer1 = defer('defer1', 2000);
+// defer1执行完成后，执行defer.then(fn)中传入的fn函数
+// 由于调用defer1.then(fn)的时候，传递进的函数返回了一个deferred对象，假设这个对象名为defer3
+// 当defer3完成的时候，会触发相应的defer2对象的完成函数（与promise2对应）
+// 如果defer3调用了defer3.resolve('defers'),则defer2.resolve('defer3')会被调用,
+// 此时promise2中对应的函数列表会被逐个执行。此处会执行fn1('defer3')
+// 以上就完成了传说中的链式调用
+var promise2 = defer1.then(function() {
+    return defer('defer3', 5000);
+});
+promise2.then(fn1);
+
+// defer1.done(fn1)是为了输出defer1执行完成的时间，用于和defer3执行结束时间比较
+defer1.done(fn1); 
+
+// 上述代码输出为
+//defer1:is resolved at Tue Jun 28 2016 22:58:01 GMT+0800 (CST)
+//deferred.html:363 defer3:is resolved at Tue Jun 28 2016 22:58:06 GMT+0800 (CST)
+
+// 上述代码可以直接写成：
+// 去掉了defer1.done(fn1)
+defer('defer1', 2000).then(function() {
+    return defer('defer3', 5000);
+}).then(fn1);
+
+                    </code></pre>
+                </section>
+            </section>
+            
+        </div>
+    </div>
+    
+    <script src="scripts/jquery-vendor.a164ccc8.js"></script>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='//www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-XXXXX-X');ga('send','pageview');
+    </script>
+
+    <script>
+        // Full list of configuration options available here:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            // Bounds for smallest/largest possible scale to apply to content
+            minScale: 0.2,
+            maxScale: 1.5,
+            theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+            transition: Reveal.getQueryHash().transition || "linear", // default/cube/page/concave/zoom/linear/fade/none
+
+            // Parallax scrolling
+            // parallaxBackgroundImage: "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg",
+            // parallaxBackgroundSize: "2100px 900px",
+        });
+    </script>
+
+    <script>
+        var fn1 = function(str){
+            console.log(str + ':' + 'is resolved at ' + new Date());
+        };
+        function defer(value, interval) {
+            var defer = $.Deferred();
+            setTimeout(function(){
+                defer.resolve(value);
+            }, interval);
+            return defer;
+        }
+        var defer1 = defer('defer1', 2000);
+        // defer1执行完成后，执行defer.then(fn)中传入的fn函数
+        // 由于调用defer1.then(fn)的时候，传递进的函数返回了一个deferred对象，假设这个对象名为defer3
+        // 当defer3完成的时候，会触发相应的defer2对象的完成函数（与promise2对应）
+        // 如果defer3调用了defer3.resolve('defers'),则defer2.resolve('defer3')会被调用,
+        // 此时promise2中对应的函数列表会被逐个执行。此处会执行fn1('defer3')
+        // 以上就完成了传说中的链式调用
+        var promise2 = defer1.then(function() {
+            return defer('defer3', 5000);
+        });
+        promise2.then([fn1, fn1]);
+        // 输出是为了作比较
+        defer1.done(fn1); 
+
+        // 上述代码输出为
+        //defer1:is resolved at Tue Jun 28 2016 22:58:01 GMT+0800 (CST)
+        //deferred.html:363 defer3:is resolved at Tue Jun 28 2016 22:58:06 GMT+0800 (CST)
+    </script>
+</body>
+</html>
