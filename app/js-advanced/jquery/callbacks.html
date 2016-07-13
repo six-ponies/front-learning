@@ -411,16 +411,6 @@ callbacks.add(fn3);
     <script src="bower_components/reveal.js/plugin/zoom-js/zoom.js"></script>
     <!-- endbuild -->
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <script>
-      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-      e.src='//www.google-analytics.com/analytics.js';
-      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-      ga('create','UA-XXXXX-X');ga('send','pageview');
-    </script>
-
     <script>
         // Full list of configuration options available here:
         // https://github.com/hakimel/reveal.js#configuration
@@ -438,6 +428,14 @@ callbacks.add(fn3);
             // Parallax scrolling
             // parallaxBackgroundImage: "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg",
             // parallaxBackgroundSize: "2100px 900px",
+
+            dependencies: [{
+                src: "../../bower_components/reveal.js/plugin/highlight/highlight.js",
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }]
             
         });
     </script>
