@@ -5,8 +5,8 @@
             "HTML5": "http//:www.baidu.com"
         },
         "css": {
-            "clearfix": "front-learning/css-basis/clearfix/clearfix.html",
-            "Line-height and vertical-align": "front-learning/css-basis/line-height&vertical-align/line-height&vertical-align.html"
+            "clearfix": "css-basis/clearfix/clearfix.html",
+            "Line-height and vertical-align": "css-basis/line-height&vertical-align/line-height&vertical-align.html"
         },
         "JS基础": {
             "nodejs": "http//:www.baidu.com"
@@ -17,6 +17,10 @@
                     "Notes On AngularJS Scope Life-Cycle": "http://onehungrymind.com/notes-on-angularjs-scope-life-cycle/",
                     "官方文档--Scopes": "https://docs.angularjs.org/guide/scope"
                 }
+            },
+            "jQuery": {
+                "回调函数(Callbacks)": "js-advanced/jquery/callbacks.html",
+                "Deferred对象": "js-advanced/jquery/deferred.html"
             }
         }
     }
