@@ -40,13 +40,41 @@ jQuery.Callbacks = function(options) {
                 </code></pre>
             </section>
             <section>
+                <h3>变量定义</h3>
+                <pre><code>
+var // Flag to know if list is currently firing
+firing,
+
+// Last fire value for non-forgettable lists
+memory,
+
+// Flag to know if list was already fired
+fired,
+
+// Flag to prevent firing
+locked,
+
+// Actual callback list
+list = [],
+
+// Queue of execution data for repeatable lists
+queue = [],
+
+// Index of currently firing callback (modified by add/remove as needed)
+firingIndex = -1,
+                </code></pre>
+            </section>
+            <section>
                 <h3>add 方法</h3>
                 <pre><code>
 // Add a callback or a collection of callbacks to the list
 add: function() {
+    // 如果list===""，则返回false
+    // disable方法和lock方法都会尝试使list=""，以达到禁用add方法的目的
     if ( list ) {
 
         // If we have memory from a past run, we should fire after adding
+        // TODO：这段代码的真是用途是什么？
         if ( memory && !firing ) {
             firingIndex = list.length - 1;
             queue.push( memory );
@@ -66,7 +94,9 @@ add: function() {
                 }
             } );
         } )( arguments );
-
+        
+        // 如果memory被设置了，则在加入回调函数后立即触发该函数
+        // 这一特性非常重要，我们会在deferred对象中体会到它的妙处
         if ( memory && !firing ) {
             fire();
         }
@@ -81,6 +111,8 @@ add: function() {
                     <h4>remove 方法</h4>
                     <pre><code>
 // Remove a callback from the list
+// Remove 方法比较简单，遍历参数arguments，判断每个函数是否存在于list列表中，
+// 如果存在，则通过splice()函数删除，如果有必要还要更新firingIndex
 remove: function() {
     jQuery.each( arguments, function( _, arg ) {
         var index;
@@ -98,6 +130,7 @@ remove: function() {
                     </code></pre>
                 </section>
                 <section>
+                <h3>jQuery的inArray()方法</h3>
                     <pre><code>
 inArray: function( elem, arr, i ) {
     return arr == null ? -1 : indexOf.call( arr, elem, i );
@@ -112,6 +145,7 @@ inArray: function( elem, arr, i ) {
                 <pre><code>
 // Check if a given callback is in the list.
 // If no argument is given, return whether or not list has callbacks attached.
+// 判断回调函数是否已经存在于回调列表中
 has: function( fn ) {
     return fn ?
         jQuery.inArray( fn, list ) > -1 :
@@ -123,6 +157,7 @@ has: function( fn ) {
                 <h3>empty 方法</h3>
                 <pre><code>
 // Remove all callbacks from the list
+// 清空回调列表
 empty: function() {
     if ( list ) {
         list = [];
@@ -133,31 +168,31 @@ empty: function() {
             </section>
 
             <section>
-                <h3>disable &amp; disabled 方法</h3>
+                <h3>disable &amp; disabled VS disable方法</h3>
                 <pre><code>
 // Disable .fire and .add
 // Abort any current/pending executions
 // Clear all callbacks and values
 disable: function() {
     locked = queue = [];
-    list = memory = "";
+    list = memory = ""; // 清空list，并起到禁用add方法的目的
     return this;
 }
 disabled: function() {
+    // 如果list=[],则返回false，如果list=""，则返回true
     return !list;
 }
-                </code></pre>
-            </section>
 
-            <section>
-                <h3>lock &amp; locked 方法</h3>
-                <pre><code>
 // Disable .fire
 // Also disable .add unless we have memory (since it would have no effect)
 // Abort any pending executions
 lock: function() {
     locked = queue = [];
     if ( !memory ) {
+    // 如果不存在memory，则清空list和memory，并禁用add方法
+    // 注意与disable()方法的区别：disable()不会关心memory这个参数，不管三七二十一就禁用掉了add()方法，
+    // 而lock()方法只在memory参数不存在（也可能是memory=""|null|undefined）时才会禁用add()方法
+    // 显然，disable()方法更加残忍直接
         list = memory = "";
     }
     return this;
