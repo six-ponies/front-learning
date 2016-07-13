@@ -80,8 +80,7 @@ add: function() {
     if ( list ) {
 
         // If we have memory from a past run, we should fire after adding
-        // 如果memory被设置了，则在加入回调函数后立即触发该函数
-        // 这一特性非常重要，我们会在deferred对象中体会到它的妙处
+        // TODO：这段代码的真是用途是什么？
         if ( memory && !firing ) {
             firingIndex = list.length - 1;
             queue.push( memory );
@@ -101,7 +100,9 @@ add: function() {
                 }
             } );
         } )( arguments );
-
+        
+        // 如果memory被设置了，则在加入回调函数后立即触发该函数
+        // 这一特性非常重要，我们会在deferred对象中体会到它的妙处
         if ( memory && !firing ) {
             fire();
         }
@@ -116,6 +117,8 @@ add: function() {
                     <h4>remove 方法</h4>
                     <pre><code>
 // Remove a callback from the list
+// Remove 方法比较简单，遍历参数arguments，判断每个函数是否存在于list列表中，
+// 如果存在，则通过splice()函数删除
 remove: function() {
     jQuery.each( arguments, function( _, arg ) {
         var index;
