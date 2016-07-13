@@ -17,6 +17,10 @@
                     "Notes On AngularJS Scope Life-Cycle": "http://onehungrymind.com/notes-on-angularjs-scope-life-cycle/",
                     "官方文档--Scopes": "https://docs.angularjs.org/guide/scope"
                 }
+            },
+            "jQuery": {
+                "回调函数(Callbacks)": "js-advanced/jquery/callbacks.html",
+                "Deferred对象": "js-advanced/jquery/deferred.html"
             }
         }
     }
