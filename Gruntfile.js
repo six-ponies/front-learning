@@ -370,10 +370,10 @@ module.exports = function(grunt) {
     replace: {
       run: {
         options: {
-          regx: [/href="styles/g, /scripts="scripts/],
-          replacement: ['href="../../styles', 'scripts="../../scripts']
+          regx: [/href="styles/g, /src="scripts/g],
+          replacement: ['href="../../styles', 'src="../../scripts']
         },
-        src: ['<%= config.dist %>/**/*.html']
+        src: ['<%= config.dist %>/*/*/*.html']
       }
     }
   });
