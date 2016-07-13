@@ -77,6 +77,8 @@ firingIndex = -1,
                 <pre><code>
 // Add a callback or a collection of callbacks to the list
 add: function() {
+    // 如果list===""，则返回false
+    // disable方法和lock方法都会尝试使list=""，以达到禁用add方法的目的
     if ( list ) {
 
         // If we have memory from a past run, we should fire after adding
@@ -118,7 +120,7 @@ add: function() {
                     <pre><code>
 // Remove a callback from the list
 // Remove 方法比较简单，遍历参数arguments，判断每个函数是否存在于list列表中，
-// 如果存在，则通过splice()函数删除
+// 如果存在，则通过splice()函数删除，如果有必要还要更新firingIndex
 remove: function() {
     jQuery.each( arguments, function( _, arg ) {
         var index;
@@ -136,6 +138,7 @@ remove: function() {
                     </code></pre>
                 </section>
                 <section>
+                <h3>jQuery的inArray()方法</h3>
                     <pre><code>
 inArray: function( elem, arr, i ) {
     return arr == null ? -1 : indexOf.call( arr, elem, i );
@@ -150,6 +153,7 @@ inArray: function( elem, arr, i ) {
                 <pre><code>
 // Check if a given callback is in the list.
 // If no argument is given, return whether or not list has callbacks attached.
+// 判断回调函数是否已经存在于回调列表中
 has: function( fn ) {
     return fn ?
         jQuery.inArray( fn, list ) > -1 :
@@ -161,6 +165,7 @@ has: function( fn ) {
                 <h3>empty 方法</h3>
                 <pre><code>
 // Remove all callbacks from the list
+// 清空回调列表
 empty: function() {
     if ( list ) {
         list = [];
@@ -171,31 +176,31 @@ empty: function() {
             </section>
 
             <section>
-                <h3>disable &amp; disabled 方法</h3>
+                <h3>disable &amp; disabled VS disable方法</h3>
                 <pre><code>
 // Disable .fire and .add
 // Abort any current/pending executions
 // Clear all callbacks and values
 disable: function() {
     locked = queue = [];
-    list = memory = "";
+    list = memory = ""; // 清空list，并起到禁用add方法的目的
     return this;
 }
 disabled: function() {
+    // 如果list=[],则返回false，如果list=""，则返回true
     return !list;
 }
-                </code></pre>
-            </section>
 
-            <section>
-                <h3>lock &amp; locked 方法</h3>
-                <pre><code>
 // Disable .fire
 // Also disable .add unless we have memory (since it would have no effect)
 // Abort any pending executions
 lock: function() {
     locked = queue = [];
     if ( !memory ) {
+    // 如果不存在memory，则清空list和memory，并禁用add方法
+    // 注意与disable()方法的区别：disable()不会关心memory这个参数，不管三七二十一就禁用掉了add()方法，
+    // 而lock()方法只在memory参数不存在（也可能是memory=""|null|undefined）时才会禁用add()方法
+    // 显然，disable()方法更加残忍直接
         list = memory = "";
     }
     return this;
