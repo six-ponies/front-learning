@@ -168,7 +168,7 @@ empty: function() {
             </section>
 
             <section>
-                <h3>disable &amp; disabled VS disable方法</h3>
+                <h3>disable VS lock</h3>
                 <pre><code>
 // Disable .fire and .add
 // Abort any current/pending executions
@@ -198,6 +198,7 @@ lock: function() {
     return this;
 },
 locked: function() {
+    // 双叹号的目的是保证返回值默认为false
     return !!locked;
 }
                 </code></pre>
@@ -206,11 +207,18 @@ locked: function() {
             <section>
                 <h3>self.fireWith &amp; self.fire &amp; self.fired 方法</h3>
                 <pre><code>
+// 首先不要奇怪这里为什么有个self，那是因为jQuery在self这个对象中定义
+// 了fire函数，但是在self对象外部也定义了一个fire函数，而且两个函数名
+// 是一样的！为了区分开来，不得不这么写了
 // Call all callbacks with the given context and arguments
+// 以给定的上下文和参数调用回调列表中的回调函数
 fireWith: function( context, args ) {
-    // 没有被锁住
+    // 如果locked = []，则 !locked返回false，表示被锁住
+    // 默认locked=undefined, 则 !locked返回true， 表示没有被锁住
     if ( !locked ) {
+        // 如果没有被锁住
         args = args || [];
+        // args.slice()可以将一个类数组对象转换成一个真正的数组
         args = [ context, args.slice ? args.slice() : args ];
         queue.push( args );
         if ( !firing ) {
@@ -234,22 +242,28 @@ fired: function() {
             </section>
 
             <section>
-                <h3>fire 方法</h3>
+                <h3>self外部的fire方法</h3>
                 <pre><code>
 // Fire callbacks
 fire = function() {
 
     // Enforce single-firing
+    // 如果在初始化$.Callbacks()时给定了“once”这个参数，则强制锁定，保证所有回调函数
+    // 只被执行一次
     locked = options.once;
 
     // Execute callbacks for all pending executions,
     // respecting firingIndex overrides and runtime changes
     fired = firing = true;
+    // 由于queue是[[context,args],[context,args], ...]这样的形式，所以需要
+    // 遍历queue这个数组，每次都从头到尾执行一个回调列表中的所有回调函数
     for ( ; queue.length; firingIndex = -1 ) {
         memory = queue.shift();
+        // 根据memory中的context和args执行一遍回调列表中的所有回调函数
         while ( ++firingIndex < list.length ) {
-
             // Run callback and check for early termination
+            // 如果在初始化$.Callbacks时代入了"stopOnFalse"参数，则会判断每个回调函数
+            // 的返回值是否为false，如果为false，则跳过剩余没有执行的所有回调函数
             if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) === false &&
                 options.stopOnFalse ) {
 
@@ -261,6 +275,7 @@ fire = function() {
     }
 
     // Forget the data if we're done with it
+    // 如果在初始化$.Callbacks()没有设置“memory”参数，则选择忘记这里的memory
     if ( !options.memory ) {
         memory = false;
     }
