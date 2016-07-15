@@ -85,7 +85,9 @@ module.exports = function(grunt) {
             return [
               connect.static('.tmp'),
               connect().use('/css-basis/line-height&vertical-align/bower_components', connect.static('./bower_components')),
-              connect().use('/js-basis/jquery/bower_components', connect.static('./bower_components')),
+              connect().use('/js-basis/js-scope/bower_components', connect.static('./bower_components')),
+              connect().use('/js-basis/js-scope/styles', connect.static('.tmp/styles')),
+
               connect().use('/js-advanced/jquery/bower_components', connect.static('./bower_components')),
               connect().use('/bower_components', connect.static('./bower_components')),
               connect().use('/fonts', connect.static('<%= config.app %>/bower_components/bootstrap/dist/fonts')),
