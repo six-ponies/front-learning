@@ -9,7 +9,7 @@
             "Line-height and vertical-align": "css-basis/line-height&vertical-align/line-height&vertical-align.html"
         },
         "JS基础": {
-            "nodejs": "http//:www.baidu.com"
+            "JS作用域": "js-basis/js-scope/js-scope.html"
         },
         "前端框架": {
             "AngularJS": {

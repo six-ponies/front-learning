@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jquery Callbacks</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/jquery-vendor.css -->
+   
+    <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css" />
+    <link rel="stylesheet" href="bower_components/reveal.js/css/theme/night.css" />
+    <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css" />
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/jquery-main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/deferred.css">
+    <!-- endbuild -->
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>JS作用域</h1>
+                <p>lordisback</p>
+            </section>  
+            <section>
+                <h3>首先，看代码</h3>
+                 <pre><code>
+// 代码片段一
+var foo = 1;
+function bar() {
+    var foo = 10;
+    console.log(foo); 
+}
+bar(); // 10
+console.log(foo); // 1
+                </code></pre>
+                <p class="align-left">这个不难理解：我们在函数bar内部定义了foo，所以函数内部foo的值为10，而在bar函数外部，其值为1</p>
+            </section>
+            <section>
+                <section>
+                    <h3>如果这样呢？</h3>
+                 <pre><code>
+var foo = 1;
+if(foo) {
+    var foo = 10;
+    console.log(foo); // 10
+}
+console.log(a);
+console.log(foo); // 10
+                </code></pre>
+                <pre><code>
+var bar = 1;
+for(var foo = 0; foo < 100; foo++) {
+    bar++;
+}
+console.log(bar); // 100
+console.log(foo); // 101
+                </code></pre>
+                </section>
+                <section>
+                    <p class="align-left">这个似乎有点难以理解了。在C语言中，“if{}”会定义新的块级作用域，其内部的“foo”的值为10，但这个变量是不会影响块级作用域外部的变量foo的。而在JS中，只有函数定义才会开辟新的作用域，而像“if{}”、“for(){}”并没有定义新的作用域！需要注意的是，此处所说的JS作用域专指用var定义的变量的作用域，如果是用let定义的变量，那么情况会有所不同，后面会有讲到。</p>
+                </section>
+            </section>        
+            <section>
+                <h3>那如果这样呢？</h3>
+                <pre><code>
+if(!foo) {
+    var foo = 10;
+    console.log(foo); // 10
+}
+                </code></pre>
+                <p class="align-left fragment" data-fragment-index="1">奇怪的事情又发生了：我们明明在定义foo之前使用了foo这个变量，但是程序并没有报错，而是输出了10！一个不得不说的概念：<span class="font-red">变量提升！</span></p>
+                <p class="align-left fragment" data-fragment-index="2">在JS中，<span class="font-red">变量的声明会被提升到其作用域的最顶端！</span>也就是说，上面的例子等效于：</p>
+                <pre class="fragment" data-fragment-index="3"><code>
+var foo;
+if(!foo) {
+    foo = 10;
+    console.log(foo); // 10
+}
+                </code></pre>
+            </section>
+            <section>
+                <section>
+                   <h3>再看看下面的例子</h3>
+                    <pre><code>
+    function bar() {
+        if(!foo){
+            console.log("foo equals " + foo);
+        }
+        return
+        var foo = 10;   
+    }
+    bar(); // foo equals undefined!
+                    </code></pre>
+                    <p class="align-left">是不是又有点奇怪了呢？在函数内部，我们先return，然后再定义变量foo，按道理来说“if(!foo)”应该报错才对。还是<span class="font-red">变量提升</span>在捣鬼</p>
+                    <p class="align-left">
+                    需要注意的两点：<br> 
+                        1、<span class="font-red">无论变量定义的语句是否会被执行，变量定义都会被提升</span><br>
+                        2、<span class="font-red">变量赋值不会被提升</span>
+                    </p> 
+                </section>
+                <section>
+                    <h3>所以下面两段代码是等效的</h3>
+                    <pre><code>
+// 代码一   
+function bar() {
+    if(!foo){
+        console.log("foo equals " + foo);
+    }
+    return
+    var foo = 10;   
+}
+bar(); // foo equals undefined!
+
+// 代码二
+function bar() {
+    var = foo;
+    if(!foo){
+        console.log("foo equals " + foo);
+    }
+    return
+    foo = 10;   
+}
+bar(); // foo equals undefined!
+                    </code></pre>
+                </section>
+                
+            </section>
+        </div>
+    </div>
+      
+</body>
+    <!-- build:js(.) scripts/jquery-vendor.js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/headjs/dist/1.0.0/head.min.js"></script>
+    <script src="bower_components/reveal.js/js/reveal.js"></script>
+    <script src="bower_components/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="bower_components/reveal.js/plugin/notes/notes.js"></script>
+    <script src="bower_components/reveal.js/plugin/zoom-js/zoom.js"></script>
+    <!-- endbuild -->
+
+    <script>
+        // Full list of configuration options available here:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            // Bounds for smallest/largest possible scale to apply to content
+            minScale: 0.2,
+            maxScale: 1.5,
+            theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+            transition: Reveal.getQueryHash().transition || "linear", // default/cube/page/concave/zoom/linear/fade/none
+
+            // Parallax scrolling
+            // parallaxBackgroundImage: "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg",
+            // parallaxBackgroundSize: "2100px 900px",
+
+            dependencies: [{
+                src: "../../bower_components/reveal.js/plugin/highlight/highlight.js",
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }]
+            
+        });
+    </script>
+</html>
