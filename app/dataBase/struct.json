@@ -13,9 +13,15 @@
         },
         "前端框架": {
             "AngularJS": {
-                "scope生命周期": {
+                "理解scope": {
                     "Notes On AngularJS Scope Life-Cycle": "http://onehungrymind.com/notes-on-angularjs-scope-life-cycle/",
-                    "官方文档--Scopes": "https://docs.angularjs.org/guide/scope"
+                    "官方文档--Scopes": "https://docs.angularjs.org/guide/scope",
+                    "Angle Brackets, Rifle Scopes": "https://ponyfoo.com/articles/angle-brackets-rifle-scopes",
+                    "Using scope.$watch and scope.$apply in AngularJS": "http://stackoverflow.com/questions/15112584/using-scope-watch-and-scope-apply-in-angularjs/15113029#15113029"
+                },
+                "理解directive": {
+                    "Understanding Directives": "https://github.com/angular/angular.js/wiki/Understanding-Directives",
+                    "AngularJS内幕详解之 Directive": "http://www.w3ctech.com/topic/1612"
                 }
             },
             "jQuery": {
