@@ -6,10 +6,16 @@
         },
         "css": {
             "clearfix": "css-basis/clearfix/clearfix.html",
-            "Line-height and vertical-align": "css-basis/line-height&vertical-align/line-height&vertical-align.html"
+            "Line-height and vertical-align": "css-basis/line-height&vertical-align/line-height&vertical-align.html",
+            "display:table-cell": {
+                "布局神器display:table-cell": "http://www.520ued.com/article/table-cell",
+                "我所知道的几种display:table-cell的应用": "http://www.zhangxinxu.com/wordpress/2010/10/%E6%88%91%E6%89%80%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E7%A7%8Ddisplaytable-cell%E7%9A%84%E5%BA%94%E7%94%A8/"
+            }
         },
         "JS基础": {
-            "JS作用域": "js-basis/js-scope/js-scope.html"
+            "JS作用域": "js-basis/js-scope/js-scope.html",
+            "JS最大安全整数": "https://segmentfault.com/a/1190000002608050",
+            "JS == 运算": "https://zhuanlan.zhihu.com/p/21650547"
         },
         "前端框架": {
             "AngularJS": {
