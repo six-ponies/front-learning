@@ -23,11 +23,14 @@
                     "Notes On AngularJS Scope Life-Cycle": "http://onehungrymind.com/notes-on-angularjs-scope-life-cycle/",
                     "官方文档--Scopes": "https://docs.angularjs.org/guide/scope",
                     "Angle Brackets, Rifle Scopes": "https://ponyfoo.com/articles/angle-brackets-rifle-scopes",
-                    "Using scope.$watch and scope.$apply in AngularJS": "http://stackoverflow.com/questions/15112584/using-scope-watch-and-scope-apply-in-angularjs/15113029#15113029"
+                    "Using scope.$watch and scope.$apply in AngularJS": "http://stackoverflow.com/questions/15112584/using-scope-watch-and-scope-apply-in-angularjs/15113029#15113029",
+                    "Authentication in AngularJS (or similar) based application": "http://espeo.eu/blog/authentication-in-angularjs-or-similar-based-application/"
+
                 },
                 "理解directive": {
                     "Understanding Directives": "https://github.com/angular/angular.js/wiki/Understanding-Directives",
-                    "AngularJS内幕详解之 Directive": "http://www.w3ctech.com/topic/1612"
+                    "AngularJS内幕详解之 Directive": "http://www.w3ctech.com/topic/1612",
+                    "Angular directives - when and how to use compile, controller, pre-link and post-link": "http://stackoverflow.com/questions/24615103/angular-directives-when-and-how-to-use-compile-controller-pre-link-and-post"
                 }
             },
             "jQuery": {
