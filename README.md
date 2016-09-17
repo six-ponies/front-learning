@@ -1,9 +1,11 @@
 # front-learning
-This is a collection of CSS, HTML and JS tricks
+This is a mind map of front-end knowledge
 
 ## Quick start
 
 - Clone the repo: `https://github.com/lordisback/front-test.git`.
-- Install with [npm]: `npm install`.
+- Install with [npm](https://www.npmjs.com): `npm install`.
 - Install with [Bower](http://bower.io): `bower install`.
-- Run the task with [grunt](): `grunt serve`,then you will find what you want in broswer.
+- Run the task with [grunt](http://gruntjs.com/): `grunt serve`,then you will find what you want in broswer.
+
+Or you can just click the [homepage]() to see on github
