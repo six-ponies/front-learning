@@ -10,12 +10,17 @@
             "display:table-cell": {
                 "布局神器display:table-cell": "http://www.520ued.com/article/table-cell",
                 "我所知道的几种display:table-cell的应用": "http://www.zhangxinxu.com/wordpress/2010/10/%E6%88%91%E6%89%80%E7%9F%A5%E9%81%93%E7%9A%84%E5%87%A0%E7%A7%8Ddisplaytable-cell%E7%9A%84%E5%BA%94%E7%94%A8/"
+            },
+            "FlexBox": {
+                "A Complete Guide to Flexbox": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+                "MDN CSS Flexible Box Layout": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout"
             }
         },
         "JS基础": {
             "JS作用域": "js-basis/js-scope/js-scope.html",
             "JS最大安全整数": "https://segmentfault.com/a/1190000002608050",
-            "JS == 运算": "https://zhuanlan.zhihu.com/p/21650547"
+            "JS == 运算": "https://zhuanlan.zhihu.com/p/21650547",
+            "JavaScript定时器与执行机制解析": "http://www.alloyteam.com/2016/05/javascript-timer/"
         },
         "前端框架": {
             "AngularJS": {
@@ -31,12 +36,26 @@
                     "Understanding Directives": "https://github.com/angular/angular.js/wiki/Understanding-Directives",
                     "AngularJS内幕详解之 Directive": "http://www.w3ctech.com/topic/1612",
                     "Angular directives - when and how to use compile, controller, pre-link and post-link": "http://stackoverflow.com/questions/24615103/angular-directives-when-and-how-to-use-compile-controller-pre-link-and-post"
+                },
+                "理解watch": {
+                    "AngularJS $watch vs $watchCollection": "http://stackoverflow.com/questions/26535415/angularjs-watch-vs-watchcollection-which-is-better-for-performance"
                 }
             },
             "jQuery": {
                 "回调函数(Callbacks)": "js-advanced/jquery/callbacks.html",
                 "Deferred对象": "js-advanced/jquery/deferred.html"
             }
+        },
+        "后端": {
+            "HTTP及其相关网络知识": {
+                "RESTful Programming": "http://stackoverflow.com/questions/671118/what-exactly-is-restful-programming",
+                "缓存": {
+                    "Caching Tutorial": "https://www.mnot.net/cache_docs/",
+                    "Making sure a web page is not cached ...": "http://stackoverflow.com/questions/49547/making-sure-a-web-page-is-not-cached-across-all-browsers",
+                    "Web缓存机制系列": "http://www.alloyteam.com/2012/03/web-cache-1-web-cache-overview/"
+                }
+            }
+
         }
     }
 }
