@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clearfix</title>
+    <style type="text/css">
+        .parentBox{
+            margin-top: 20px;
+            background-color: blue;
+        }
+        .float{
+            float: left;
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
+            margin-bottom: 20px;
+            background-color: red;
+        }
+
+        /*
+         * 第一种清除浮动的方法
+         * 通过添加一个新的标签，并为标签设置clear属性
+         */
+        .clearfix1{
+            /* 这里不需要为父框设置任何样式就可以实现清除浮动效果 */
+        }
+        .extraBox{
+            clear: both; /* 清除浮动 */
+        }
+        
+
+        /*
+         * 第二种清除浮动的方法
+         * 与第一种方法类似，也是通过设置clear属性实现
+         */
+        .clearfix2{
+            zoom: 1; /* IE6和IE7需要通过zoom:1来触发haslayout */
+        }
+        .clearfix2:after{
+            content: '.';
+            display: block;
+            height: 0;
+            visibility: hidden; /* 隐藏该 block，但是该 block 还是会占据空间，不同于 "display:none", display:none 不占据任何空间 */
+            clear: both;
+        }
+        
+        /*
+         * 第三种清除浮动的方法
+         * 通过设置容器的 overflow 属性为 hidden，达到包裹 float 元素的效果
+         */
+        .clearfix3{
+            overflow: hidden;
+            /* IE6不支持，但是IE7、IE8均支持*/
+        }
+        
+        /*
+         * 第四种清除浮动的方法
+         * 通过设置父容器的 position 属性为 absolute，使得父容器能完整包裹内部float元素。
+         * 但是有个需要注意的是：父容器会脱离文档流
+         */
+        .clearfix4{
+            position: absolute;
+        }
+
+        /*
+         * 第五种清除浮动的方法
+         * 通过设置父容器的 float 属性为 left 或 right，使得父容器能完整包裹内部 float 元素。
+         * 同样的，父容器也会脱离文档流（这就是为什么我们看到第4个和第5个 parentBox 重合到了一起）
+         */
+        .clearfix5{
+            float: left;
+        }
+        
+        /*
+         * 第五种清除浮动的方法
+         * 通过设置父容器的 display 属性为 inline-block，使得父容器能完整包裹内部 float 元素。
+         */
+        .clearfix6{
+            display: inline-block;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 第一种 -->
+    <div class="parentBox clearfix1">
+        <div class="float"></div>
+        <div class="float"></div>
+        <div class="extraBox"></div>
+        <!-- 这里需要添加一个新的标签用于清除浮动，但往往我们不希望添加一些无意义的标签-->
+    </div>
+    
+    <!-- 第二种 -->
+    <div class="parentBox clearfix2" style="min-height:200px;">
+        <div class="float"></div>
+        <div class="float"></div>
+    </div>
+
+    <!-- 第三种 -->
+    <div class="parentBox clearfix3">
+        <div class="float"></div>
+        <div class="float"></div>
+    </div>
+    
+    <!-- 第四种 -->
+    <div class="parentBox clearfix4">
+        <div class="float"></div>
+        <div class="float"></div>
+    </div>
+
+    <!-- 第五种 -->
+    <div class="parentBox clearfix5">
+        <div class="float"></div>
+        <div class="float"></div>
+    </div>
+
+    <!-- 第六种 -->
+    <div class="parentBox clearfix6">
+        <div class="float"></div>
+        <div class="float"></div>
+    </div>
+</body>
+</html>

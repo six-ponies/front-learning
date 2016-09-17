@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jquery Callbacks</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="/favicon.b25e58c4.ico">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="../../styles/jquery-vendor.7a70c91e.css">
+    <link rel="stylesheet" href="../../styles/jquery-main.722ef189.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h2>jQuery Callbacks 源码解读</h2>
+            </section>
+
+            <section>
+                <h3>基本结构</h3>
+                <pre><code>
+jQuery.Callbacks = function(options) {
+    // self.fireWith 以及 self.add中都有调用fire方法
+    fire = function() {}
+    self = {
+        add: function() {}, 
+        remove: function() {},
+        has: function(fn) {},
+        empty: function() {},
+        disable: function() {},
+        disabled: function() {},
+        lock: function() {},
+        locked: function() {},
+        fireWith: function(context, args) {},
+        fire: function() {},
+        fired: function() {}
+    };
+    return self;
+};
+                </code></pre>
+            </section>
+            <section>
+                <h3>变量定义</h3>
+                <pre><code>
+var // Flag to know if list is currently firing
+firing,
+
+// Last fire value for non-forgettable lists
+memory,
+
+// Flag to know if list was already fired
+fired,
+
+// Flag to prevent firing
+locked,
+
+// Actual callback list
+list = [],
+
+// Queue of execution data for repeatable lists
+queue = [],
+
+// Index of currently firing callback (modified by add/remove as needed)
+firingIndex = -1,
+                </code></pre>
+            </section>
+            <section>
+                <h3>add 方法</h3>
+                <pre><code>
+// Add a callback or a collection of callbacks to the list
+add: function() {
+    // 如果list===""，则返回false
+    // disable方法和lock方法都会尝试使list=""，以达到禁用add方法的目的
+    if ( list ) {
+
+        // If we have memory from a past run, we should fire after adding
+        // TODO：这段代码的真是用途是什么？
+        if ( memory && !firing ) {
+            firingIndex = list.length - 1;
+            queue.push( memory );
+        }
+
+        ( function add( args ) {
+            jQuery.each( args, function( _, arg ) {
+                if ( jQuery.isFunction( arg ) ) {
+                    // 回调不唯一或者回调唯一但不存在
+                    if ( !options.unique || !self.has( arg ) ) {
+                        list.push( arg );
+                    }
+                } else if ( arg && arg.length && jQuery.type( arg ) !== "string" ) {
+                    // arg 如果为数组或对象，则递归调用add
+                    // Inspect recursively
+                    add( arg );
+                }
+            } );
+        } )( arguments );
+        
+        // 如果memory被设置了，则在加入回调函数后立即触发该函数
+        // 这一特性非常重要，我们会在deferred对象中体会到它的妙处
+        if ( memory && !firing ) {
+            fire();
+        }
+    }
+    return this;
+}
+                </code></pre>
+            </section>
+
+            <section>
+                <section>
+                    <h4>remove 方法</h4>
+                    <pre><code>
+// Remove a callback from the list
+// Remove 方法比较简单，遍历参数arguments，判断每个函数是否存在于list列表中，
+// 如果存在，则通过splice()函数删除，如果有必要还要更新firingIndex
+remove: function() {
+    jQuery.each( arguments, function( _, arg ) {
+        var index;
+        while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
+            list.splice( index, 1 );
+
+            // Handle firing indexes
+            if ( index <= firingIndex ) {
+                firingIndex--;
+            }
+        }
+    } );
+    return this;
+}
+                    </code></pre>
+                </section>
+                <section>
+                <h3>jQuery的inArray()方法</h3>
+                    <pre><code>
+inArray: function( elem, arr, i ) {
+    return arr == null ? -1 : indexOf.call( arr, elem, i );
+}
+                    </code></pre>
+                </section>
+                
+            </section>
+
+            <section>
+                <h3>has 方法</h3>
+                <pre><code>
+// Check if a given callback is in the list.
+// If no argument is given, return whether or not list has callbacks attached.
+// 判断回调函数是否已经存在于回调列表中
+has: function( fn ) {
+    return fn ?
+        jQuery.inArray( fn, list ) > -1 :
+        list.length > 0;
+}
+                </code></pre>
+            </section>
+            <section>
+                <h3>empty 方法</h3>
+                <pre><code>
+// Remove all callbacks from the list
+// 清空回调列表
+empty: function() {
+    if ( list ) {
+        list = [];
+    }
+    return this;
+}
+                </code></pre>
+            </section>
+
+            <section>
+                <h3>disable VS lock</h3>
+                <pre><code>
+// Disable .fire and .add
+// Abort any current/pending executions
+// Clear all callbacks and values
+disable: function() {
+    locked = queue = [];
+    list = memory = ""; // 清空list，并起到禁用add方法的目的
+    return this;
+}
+disabled: function() {
+    // 如果list=[],则返回false，如果list=""，则返回true
+    return !list;
+}
+
+// Disable .fire
+// Also disable .add unless we have memory (since it would have no effect)
+// Abort any pending executions
+lock: function() {
+    locked = queue = [];
+    if ( !memory ) {
+    // 如果不存在memory，则清空list和memory，并禁用add方法
+    // 注意与disable()方法的区别：disable()不会关心memory这个参数，不管三七二十一就禁用掉了add()方法，
+    // 而lock()方法只在memory参数不存在（也可能是memory=""|null|undefined）时才会禁用add()方法
+    // 显然，disable()方法更加残忍直接
+        list = memory = "";
+    }
+    return this;
+},
+locked: function() {
+    // 双叹号的目的是保证返回值默认为false
+    return !!locked;
+}
+                </code></pre>
+            </section>
+
+            <section>
+                <h3>self.fireWith &amp; self.fire &amp; self.fired 方法</h3>
+                <pre><code>
+// 首先不要奇怪这里为什么有个self，那是因为jQuery在self这个对象中定义
+// 了fire函数，但是在self对象外部也定义了一个fire函数，而且两个函数名
+// 是一样的！为了区分开来，不得不这么写了
+// Call all callbacks with the given context and arguments
+// 以给定的上下文和参数调用回调列表中的回调函数
+fireWith: function( context, args ) {
+    // 如果locked = []，则 !locked返回false，表示被锁住
+    // 默认locked=undefined, 则 !locked返回true， 表示没有被锁住
+    if ( !locked ) {
+        // 如果没有被锁住
+        args = args || [];
+        // args.slice()可以将一个类数组对象转换成一个真正的数组
+        args = [ context, args.slice ? args.slice() : args ];
+        queue.push( args );
+        if ( !firing ) {
+            fire();
+        }
+    }
+    return this;
+},
+
+// Call all the callbacks with the given arguments
+fire: function() {
+    self.fireWith( this, arguments );
+    return this;
+},
+
+// To know if the callbacks have already been called at least once
+fired: function() {
+    return !!fired;
+}
+                </code></pre>
+            </section>
+
+            <section>
+                <h3>self外部的fire方法</h3>
+                <pre><code>
+// Fire callbacks
+fire = function() {
+
+    // Enforce single-firing
+    // 如果在初始化$.Callbacks()时给定了“once”这个参数，则强制锁定，保证所有回调函数
+    // 只被执行一次
+    locked = options.once;
+
+    // Execute callbacks for all pending executions,
+    // respecting firingIndex overrides and runtime changes
+    fired = firing = true;
+    // 由于queue是[[context,args],[context,args], ...]这样的形式，所以需要
+    // 遍历queue这个数组，每次都从头到尾执行一个回调列表中的所有回调函数
+    for ( ; queue.length; firingIndex = -1 ) {
+        memory = queue.shift();
+        // 根据memory中的context和args执行一遍回调列表中的所有回调函数
+        while ( ++firingIndex < list.length ) {
+            // Run callback and check for early termination
+            // 如果在初始化$.Callbacks时代入了"stopOnFalse"参数，则会判断每个回调函数
+            // 的返回值是否为false，如果为false，则跳过剩余没有执行的所有回调函数
+            if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) === false &&
+                options.stopOnFalse ) {
+
+                // Jump to end and forget the data so .add doesn't re-fire
+                firingIndex = list.length;
+                memory = false;
+            }
+        }
+    }
+
+    // Forget the data if we're done with it
+    // 如果在初始化$.Callbacks()没有设置“memory”参数，则选择忘记这里的memory
+    if ( !options.memory ) {
+        memory = false;
+    }
+
+    firing = false;
+
+    // Clean up if we're done firing for good
+    if ( locked ) {
+
+        // Keep an empty list if we have data for future add calls
+        if ( memory ) {
+            list = [];
+
+        // Otherwise, this object is spent
+        } else {
+            list = "";
+        }
+    }
+}
+                </code></pre>
+            </section>
+
+            <section>
+                <h3>例子1</h3>
+                <pre><code>
+function fn1(value) {
+    console.log('fn1 says: ' + value);
+}
+function fn2(value) {
+    console.log('fn2 says: ' + value);
+}
+var callbacks = $.Callbacks();
+callbacks.add(fn1);
+
+// fn1 says: foo
+callbacks.fire('foo'); 
+callbacks.add(fn2);
+
+// fn1 says: bar 
+// fn2 says: bar
+callbacks.fire('bar');
+                </code></pre>
+            </section>
+
+            <section>
+                <h3>例子2 once</h3>
+                <pre><code>
+function fn1(value) {
+    console.log('fn1 says: ' + value);
+}
+function fn2(value) {
+    console.log('fn2 says: ' + value);
+}
+
+// Callbacks传递了once
+var callbacks = $.Callbacks('once');
+callbacks.add(fn1);
+
+// fn1 says: foo
+callbacks.fire('foo');
+
+// 无法再添加任何回调函数。
+// 第一次调用fire后，callbacks的回调列表被强制转成一个空字符串，再调用add方法将不执行任何操作
+callbacks.add(fn2);
+
+// 由于callbacks的回调列表变成了一个空字符串，所以没有输出 
+callbacks.fire('bar'); 
+                </code></pre>
+            </section>
+
+            <section>
+                <h3>例子3 memory</h3>
+                <pre><code>
+function fn1(value) {
+    console.log('fn1 says: ' + value);
+}
+function fn2(value) {
+    console.log('fn2 says: ' + value);
+}
+
+// Callbacks传递了memory
+var callbacks = $.Callbacks('memory'); // 也可以这样使用： $.Callbacks({"memory":true})
+callbacks.add(fn1);
+
+// fn1 says: foo
+callbacks.fire('foo');
+
+// fn2 says: foo
+callbacks.add(fn2);
+// 由于有memory标志，在添加fn2后马上执行了fn2
+
+// fn1 says: bar
+// fn2 says: bar 
+callbacks.fire('bar'); 
+                </code></pre>
+            </section>
+            <section>
+                <h3>例子4 once &amp; memory</h3>
+                <pre><code>
+function fn1(value) {
+    console.log('fn1 says: ' + value);
+}
+function fn2(value) {
+    console.log('fn2 says: ' + value);
+}
+function fn3(value) {
+    console.log('fn3 says: ' + value);
+}
+
+// Callbacks传递了once和memory
+var callbacks = $.Callbacks('once memory'); 
+callbacks.add(fn1);
+
+// fn1 says: foo
+callbacks.fire('foo');
+
+// fn2 says: foo
+callbacks.add(fn2);
+// 由于有memory标志，在添加fn2后马上执行了fn2
+
+// 由于有once标志，执行完一次fire后，locked=true
+// 直接调用callbacks的对象函数fire将不起任何作用（吐槽下jQuery，为什么两个fire名字相同，这样都不太好区分）
+callbacks.fire('bar'); 
+
+// fn3 says: foo
+callbacks.add(fn3);
+// 由于有memory标志，在添加fn3后马上执行了fn3
+                </code></pre>
+            </section>
+        </div>
+    </div>
+      
+</body>
+    <script src="../../scripts/jquery-vendor.a164ccc8.js"></script>
+
+    <script>
+        // Full list of configuration options available here:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            // Bounds for smallest/largest possible scale to apply to content
+            minScale: 0.2,
+            maxScale: 1.5,
+            theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+            transition: Reveal.getQueryHash().transition || "linear", // default/cube/page/concave/zoom/linear/fade/none
+
+            // Parallax scrolling
+            // parallaxBackgroundImage: "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg",
+            // parallaxBackgroundSize: "2100px 900px",
+
+            dependencies: [{
+                src: "../../bower_components/reveal.js/plugin/highlight/highlight.js",
+                async: true,
+                callback: function() {
+                    hljs.initHighlightingOnLoad();
+                }
+            }]
+            
+        });
+    </script>
+</html>
