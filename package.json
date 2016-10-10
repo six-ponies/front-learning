@@ -1,8 +1,8 @@
 {
     "name": "front-learning",
     "version": "0.0.1",
-    "author": "myc",
-    "description": "This is a collection of HTML, CSS and JS basis and tricks",
+    "author": "lordisback",
+    "description": "This is a mind map of front-end knowledge",
     "keywords": ["HTML", "CSS", "JS", "basis", "tricks"],
 
     "devDependencies": {
