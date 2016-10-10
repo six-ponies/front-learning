@@ -8,4 +8,4 @@ This is a mind map of front-end knowledge
 - Install with [Bower](http://bower.io): `bower install`.
 - Run the task with [grunt](http://gruntjs.com/): `grunt serve`,then you will find what you want in broswer.
 
-Or you can just click the [homepage]() to see on github
+Or you can just click here [homepage](http://lordisback.github.io/front-learning/) to see on github
