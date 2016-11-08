@@ -7,8 +7,11 @@ Reveal.initialize({
     history: true,
     center: true,
     // Bounds for smallest/largest possible scale to apply to content
-    minScale: 0.2,
-    maxScale: 1.5,
+    width: "100%",
+    height: "100%",
+    margin: 0.2,
+    minScale: 1,
+    maxScale: 1,
     theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
     transition: Reveal.getQueryHash().transition || "linear", // default/cube/page/concave/zoom/linear/fade/none
 
