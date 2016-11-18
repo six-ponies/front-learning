@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+    <meta charset="utf-8">
+    <title>Line-height &amp; Vertical-align</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/position-vendor.css -->
+   
+    <link rel="stylesheet" href="bower_components/reveal.js/css/reveal.css" />
+    <link rel="stylesheet" href="bower_components/reveal.js/css/theme/night.css" />
+    <link rel="stylesheet" href="bower_components/reveal.js/lib/css/zenburn.css" />
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/position.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/position.css">
+    <!-- endbuild -->
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Positioning Scheme</h1>
+                <h1>定位方案</h1>
+            </section>
+            <section>
+                <h2>position属性有哪些</h2>
+                <ul class="fragment">
+                    <li>static</li>
+                    <li>relative</li>
+                    <li>absolute</li>
+                    <li>fixed</li>
+                    <li>inherit</li>
+                </ul>
+            </section>
+            <section>
+                <h2>position: static</h2>
+                <div class="main-content">
+                    <p class="tal">1、盒子是普通的盒子，布局是常规流</p>
+                    <p class="tal">2、top、left、bottom、right以及z-index属性被忽略</p>
+                </div>
+            </section>
+            <section>
+                <h2>position: relative</h2>
+                <div class="main-content tal">
+                    <p>
+                        1、position in normal flow(常规流中的定位)。定位的基准是该<span class="fr">元素在常规流中本应处在的位置</span>。
+                    </p>
+                    <p>
+                        2、运用相对定位的元素没有脱离常规流（out of flow），
+                        且不会影响其他同级元素的布局
+                    </p>
+                </div>
+            </section>
+            <section>
+                <h2>position in normal flow</h2>
+                <pre>
+                    <code>
+<div class="tal" style="background: #eee;">
+    <div >
+        <div class="box box1">box1</div>
+        <div class="box box2">box2</div>
+        <div class="box box3">box3</div>
+    </div>
+</div>
+                    </code>
+                </pre>
+                <div class="tal">
+                    <div>
+                        <label for="" style="vertical-align: middle;">top:</label>
+                        <input id="top" type="text" value="0" style="vertical-align: middle; font-size: 16px;">
+                        px <label for="" style="vertical-align: middle;margin-left: 20px;">left:</label>
+                        <input id="left" type="text" value="0" style="vertical-align: middle; font-size: 16px;">
+                        px
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+                <div class="tal" style="background: #eee;">
+                    <div >
+                        <div class="box box1">box1</div>
+                        <div class="box box2">box2</div>
+                        <div class="box box3">box3</div>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h2>position: absolute</h2>
+                <div class="tal">
+                    <p>1、定位的基准是该元素的containing block（包含块）</p>
+                    <p>2、包裹性（shrink-to-fit）</p>
+                    <p>3、该元素会脱离常规流（out of flow）</p>
+                    <p>4、位置跟随</p>
+                </div>
+            </section>
+            <section>
+                <section>
+                    <h2>position:absolute之</h2>
+                    <h1 class="fr">包含块</h1>
+                </section>
+                <section>
+                    <div class="taj">
+                        <p>
+                            定义：在 CSS2.1 中，很多框的定位尺寸和大小尺寸的计算，都取决于一个矩形的边界，这个矩形，被称作是包含块( containing block )。
+                        </p>
+                        <p class="fragment">
+                            1、initial containing block（初始包含块）。包含root element（根元素、根节点）的块
+                        </p>
+                        <p class="fragment">
+                            2、如果元素的position为static或者relative，则该元素的包含块由它最近的块级（block），单元格（table-cell）或者内联块（inline-block）祖先元素的<span style="color:red">内容框（content edge）</span>创建
+                        </p>
+                    </div>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+    &lt;!DOCTYPE&gt;
+    &lt;html&gt;
+       &lt;head&gt;
+          <TITLE>Illustration of containing blocks</TITLE>
+       &lt;/head&gt;
+       &lt;body id="body"&gt;
+          <div id="div1">
+          <P id="p1">This is text in the first paragraph...</P>
+          <P id="p2">This is text <em id="em1"> in the 
+          <strong id="strong1">second</strong> paragraph.</em></P>
+          </div>
+       &lt;/body&gt;
+    &lt;/html&gt;
+                        </code>
+                    </pre>
+                    <table class="fragment" style="font-size: 18px;">
+                        <thead>
+                            <tr>
+                                <td>For box generated by</td>
+                                <td>C.B is established by</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>html</td>
+                                <td>initial C.B.(UA-depedent)</td>
+                            </tr>
+                            <tr>
+                                <td>body</td>
+                                <td>html</td>
+                            </tr>
+                            <tr>
+                                <td>div</td>
+                                <td>body</td>
+                            </tr>
+                            <tr>
+                                <td>p1</td>
+                                <td>div1</td>
+                            </tr>
+                            <tr>
+                                <td>p2</td>
+                                <td>div1</td>
+                            </tr>
+                            <tr>
+                                <td>em1</td>
+                                <td>p2</td>
+                            </tr>
+                            <tr>
+                                <td>strong1</td>
+                                <td>p2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section>
+                    <p>
+                        position:relative定位不是相对该元素本应处在的位置的么，这个containing block对它有什么用？
+                    </p>
+                    <div class="fragment">
+                        <pre>
+                            <code>
+<div style="height: 100px;background-color: red;">
+    <div style="width: 50%;height: 50%;background-color: green;">
+        children box
+    </div>
+</div>  
+                            </code>
+                        </pre>
+                        <div class="tal">
+                            <p>position: <button id="rel-btn" style="vertical-align: middle;padding: 6px 15px;">static</button></p>
+                            <p>top: <input type="text" id="rel-top"> %</p>
+                            <p>left: <input type="text" id="rel-left"> %</p>
+                        </div>
+                        <div style="height: 100px;width:800px;background-color: red;border: 50px solid blue">
+                            <div id="rel-box" style="width: 50%;height: 50%;background-color: green;">
+                                children box
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="taj">
+                        <p>2、如果元素的position为static或者relative，则该元素的包含块由它最近的块级，单元格（table-cell）或者内联块（inline-block）祖先元素的<span style="color:red">内容框（content edge）</span>创建</p>
+                    </div>
+                    <pre>
+                        <code>
+    <div id="rel-border-box" style="height: 100px;width:800px;background-color: red;">
+        <div id="rel-box" style="position:relative;width: 50%;height: 50%;background-color: green;">
+            children box
+        </div>
+    </div>
+                        </code>
+                    </pre>
+                    <div class="tal">
+                        <p>border: <input type="range" min="0" max="100" step="1" value="0" id="rel-border"> <span id="border-value">0</span>px padding: <input type="range" min="0" max="100" step="1" value="0" id="rel-padding"> <span id="padding-value">0</span>px margin: <input type="range" min="0" max="100" step="1" value="0" id="rel-margin"> <span id="margin-value">0</span>px</p>
+                        <p>left: <input type="range" min="0" max="100" step="1" value="0" id="rel-left-2"> <span id="left-value">0</span>% top: <input type="range" min="0" max="100" step="1" value="0" id="rel-top-2"> <span id="top-value">0</span>%</p>
+                        <p></p>
+                    </div>
+                    <div id="rel-border-box" style="height: 100px;width:800px;background-color: red;">
+                        <div id="rel-box-2" style="position:relative;width: 50%;height: 50%;background-color: green;">
+                            children box
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <h2>containing box （包含盒子）</h2>
+                    <div class="taj">
+                        <p>
+                            3、如果元素的position为fixed，则该元素的包含块由浏览器窗口（viewport）创建
+                        </p>
+                    </div>
+                </section>
+                <section>
+                    <h2>containing box （包含盒子）</h2>
+                    <div class="taj">
+                        4、如果元素的position为absolute，包含块由最近的position属性为relative，absolute或fixed的祖先元素创建。
+                        <ul>
+                            <li>
+                                4.1如果其祖先元素为内联元素（inline element），则包含块取决于其祖先元素的‘direction’属性
+                            </li>
+                            <li>
+                                4.2其他情况下，包含块是祖先元素的<span class="fr">内边距边界（padding edge）</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <section>
+                    <h2>祖先是内联元素（inline element）</h2>
+                    <div class="tal">
+                        <p style="color: red;">1). 如果 ‘direction’ 是 ‘ltr’，包含块的顶、左边是祖先元素生成的第一个框的顶、左内边距边界(padding edges) ，右、下边是祖先元素生成的最后一个框的右、下内边距边界(padding edges)</p>
+                    </div>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+<p style="display: inline-block;border:1px solid red; width:380px; padding:20px;text-align: left;">
+    T <span style="background-color:#C0C0C0; position:relative;">
+    这段文字从左向右排列，红 XX 和 蓝 XX 和黄 XX 都是绝对定位元素，它的包含块是相对定位的SPAN。
+    可以通过它们绝对定位的位置来判断它们包含块的边缘。
+    <em style="position:absolute;background-color: red; color:#fff; top:0; left:0;">XX</em>
+    <em style="position:absolute;background-color: yellow; color:
+    #000; top:20px; left:0;">XX</em>
+    <em style="position:absolute;background-color: blue; color:#fff; bottom:0; right:0;">XX</em> </span> 
+</p>
+                        </code>
+                    </pre>
+                    <div>
+                        <p style="display: inline-block;border:1px solid red; width:380px; padding:20px;text-align: left;">
+                            T <span style="background-color:#C0C0C0; position:relative;">
+                            这段文字从左向右排列，红 XX 和 蓝 XX 和黄 XX 都是绝对定位元素，它的包含块是相对定位的SPAN。
+                            可以通过它们绝对定位的位置来判断它们包含块的边缘。
+                            <em style="position:absolute;background-color: red; color:#fff; top:0; left:0;">XX</em>
+                            <em style="position:absolute;background-color: yellow; color:
+                            #000; top:20px; left:0;">XX</em>
+                            <em style="position:absolute;background-color: blue; color:#fff; bottom:0; right:0;">XX</em> </span> 
+                        </p>
+                    </div>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+<p style="display: inline-block;border:1px solid red; width:350px; padding:20px;text-align: left;">
+    TEXT TEXT TEXT <span style="background-color:#C0C0C0; position:relative;">
+    这段文字从左向右排列，红 XX 和 蓝 XX 和黄 XX 都是绝对定位元素，它的包含块是相对定位的SPAN。
+    可以通过它们绝对定位的位置来判断它们包含块的边缘。
+    <em style="position:absolute;background-color: red; color:#fff; top:0; left:0;">XX</em>
+    <em style="position:absolute;background-color: yellow; color:
+    #000; top:20px; left:0;">XX</em>
+    <em style="position:absolute;background-color: blue; color:#fff; bottom:0; right:0;">XX</em> </span> 
+</p>
+                        </code>
+                    </pre>
+                    <p class="tal">width: <input type="range" min="350" max="420" value="350" id="text-width"> <span id="text-width-value">350</span>px</p>
+                    <div>
+                        <p id="changed-p" style="display: inline-block;border:1px solid red; width:350px; padding:20px;text-align: left;">
+                            TEXT TEXT TEXT <span style="background-color:#C0C0C0; position:relative;">
+                            这段文字从左向右排列，红 XX 和 蓝 XX 和黄 XX 都是绝对定位元素，它的包含块是相对定位的SPAN。
+                            可以通过它们绝对定位的位置来判断它们包含块的边缘。
+                            <em style="position:absolute;background-color: red; color:#fff; top:0; left:0;">XX</em>
+                            <em style="position:absolute;background-color: yellow; color:
+                            #000; top:20px; left:0;">XX</em>
+                            <em style="position:absolute;background-color: blue; color:#fff; bottom:0; right:0;">XX</em> </span> 
+                        </p>
+                    </div>
+                </section>
+                <section>
+                <h2>祖先是内联元素（inline element）</h2>
+                    <div class="tal">
+                        <p style="color: red;">2). 如果 ‘direction’ 是 ‘rtl’，包含块的顶、右边是祖先元素生成的第一个框的顶、右内边距边界 (padding edges) ，左、下边是祖先元素生成的最后一个框的左、下内边距边界 (padding edges)</p>
+                    </div>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+<p style="display: inline-block;border:1px solid red; width:380px; padding:20px;text-align: left;direction: rtl">
+    TEXT TEXT TEXT <span style="background-color:#C0C0C0; position:relative;">
+    这段文字从右向左排列，红 XX 和 蓝 XX 和黄 XX 都是绝对定位元素，它的包含块是相对定位的SPAN。
+    可以通过它们绝对定位的位置来判断它们……
+    <em style="position:absolute;background-color: red; color:#fff; top:0; left:0;">XX</em>
+    <em style="position:absolute;background-color: yellow; color:
+    #000; top:20px; left:0;">XX</em>
+    <em style="position:absolute;background-color: blue; color:#fff; bottom:0; right:0;">XX</em> 
+    </span> 
+</p>
+                        </code>
+                    </pre>
+                    <div>
+                        <p style="display: inline-block;border:1px solid red; width:380px; padding:20px;text-align: left;direction: rtl">
+                            TEXT TEXT TEXT <span style="background-color:#C0C0C0; position:relative;">
+                            这段文字从右向左排列，红 XX 和 蓝 XX 和黄 XX 都是绝对定位元素，它的包含块是相对定位的SPAN。
+                            可以通过它们绝对定位的位置来判断它们……
+                            <em style="position:absolute;background-color: red; color:#fff; top:0; left:0;">XX</em>
+                            <em style="position:absolute;background-color: yellow; color:
+                            #000; top:20px; left:0;">XX</em>
+                            <em style="position:absolute;background-color: blue; color:#fff; bottom:0; right:0;">XX</em> 
+                            </span> 
+                        </p>
+                    </div>
+                </section>
+                <section>
+                    <h2>祖先元素不为内联元素（inline element），包含块是该祖先元素的内边距边界（padding edge）</h2>
+                </section>
+                <section>
+                <pre>
+                    <code>
+<div style="background-color: blue;overflow: hidden;">
+    <div id="" style="position:relative;background-color: #eee;margin: 30px;border:30px solid red; padding: 30px; height: 200px;">
+        <div class="box box2" style="position: absolute;top: 0;left: 0">box</div>
+    </div>
+</div>  
+                    </code>
+                </pre>
+                    <div style="background-color: blue;overflow: hidden;">
+                        <div id="" style="position:relative;background-color: #eee;margin: 30px;border:30px solid red; padding: 30px; height: 200px;">
+                            <div class="box box2" style="position: absolute;top: 0;left: 0">box</div>
+                        </div>
+                    </div>
+                    
+                </section>
+                <section>
+                    <h2>containing block总结</h2>
+                    <div style="width: 100%;max-height:1000px; ">
+                         <img style="height: 650px;" src="../../images/positioning/contain-block-process.png" alt="">
+                    </div>
+                   
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>position:absolute之</h2>
+                    <h1 class="fr">包裹性（shrik-to-fit）</h1>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+<div style="background-color: #eee;">
+    <div id="abs-box" style="background-color: red;width: 200px;height: 100px;">static</div>
+</div>
+                        </code>
+                    </pre>
+                    <div class="tal">
+                        <p>border: <input type="range" min="0" max="100" step="1" value="0" id="abs-border"> <span id="abs-border-value" class="fb">0</span>px padding: <input type="range" min="0" max="100" step="1" value="0" id="abs-padding"> <span id="abs-padding-value">0</span>px margin: <input type="range" min="0" max="100" step="1" value="0" id="abs-margin"> <span id="abs-margin-value">0</span>px</p>
+                    </div>
+                    <div style="background-color: #eee;" class="to-absolute">
+                        <div id="abs-box" style="background-color: red;width: 200px;height: 100px;">static</div>
+                    </div>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>postion:absolute之</h2>
+                    <h1 class="fr">脱离常规流</h1>
+                </section>
+                <section>
+                    <h2>什么是常规流（normal flow）？</h2>
+                    <p class="taj">
+                        Boxes in the normal flow belong to a formatting context, which may be block or inline, but not both simultaneously. Block-level boxes participate in a block formatting context. Inline-level boxes participate in an inline formatting context.
+                    </p>
+                    <p class="taj">
+                        在常规流中，盒一个接着一个排列。在<span class="fr">块级格式化上下文(block formatting context)</span>里面， 它们竖着排列；在<span class="fr">行内格式化上下文(inline formatting context)</span>里面， 它们横着排列。
+                    </p>
+                </section>
+                <section>
+                    <h2>创建Block Formatting Context的条件</h2>
+                    <ul>
+                        <li>根元素</li>
+                        <li>浮动（float不为none）</li>
+                        <li>绝对定位元素（position为absolute或fixed）</li>
+                        <li>行内块（inline-block）、表格单元格（table-cell）、表格标题（table-caption）</li>
+                        <li>overflow不为visible的元素</li>
+                        <li>弹性盒子（flex或inline-flex）</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>BFC 特性之一</h2>
+                    <p class="taj">
+                        在一个BFC中，盒子一个接一个，竖直的，从上到下排列。两个相邻的盒子的间距由margin控制。<span class="fr">作为BFC的父元素不会和其子元素发生外边距坍塌（margin collapse）</span>
+                    </p>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+<div style="background-color: #eee;">
+    <div style="height: 50px;margin: 20px 0;background-color: red;"></div>
+    <div style="height: 50px;margin: 20px 0;background-color: green"></div>
+    <div style="height: 50px;margin: 20px 0;background-color: blue"></div>
+</div>
+                        </code>
+                    </pre>
+                    <div class="fragment" style="background-color: #eee;">
+                        <div style="height: 50px;margin: 20px 0;background-color: red;">box1</div>
+                        <div style="height: 50px;margin: 20px 0;background-color: green">box2</div>
+                        <div style="height: 50px;margin: 20px 0;background-color: blue">box3</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>消除margin collapse</h2>
+                    <pre>
+                        <code>
+<div style="background-color: #eee;overflow: hidden;">
+    <div style="height: 50px;margin: 20px 0;background-color: red;"></div>
+    <div style="height: 50px;margin: 20px 0;background-color: green"></div>
+    <div style="height: 50px;margin: 20px 0;background-color: blue"></div>
+</div>
+                        </code>
+                    </pre>
+                    <div class="fragment" style="background-color: #eee;overflow: hidden;">
+                        <div style="height: 50px;margin: 20px 0;background-color: red;">box1</div>
+                        <div style="height: 50px;margin: 20px 0;background-color: green">box2</div>
+                        <div style="height: 50px;margin: 20px 0;background-color: blue">box3</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>消除margin collapse</h2>
+                    <pre>
+                        <code>
+    <div style="background-color: #eee;overflow: hidden;">
+        <div style="height: 50px;margin: 20px 0;background-color: red;">box1</div>
+        <div style="overflow: hidden;">
+            <div style="height: 50px;margin: 20px 0;background-color: green;">box2</div>
+        </div>
+        <div style="height: 50px;margin: 20px 0;background-color: blue">box3</div>
+    </div>
+                        </code>
+                    </pre>
+                    <div style="background-color: #eee;overflow: hidden;">
+                        <div style="height: 50px;margin: 20px 0;background-color: red;">box1</div>
+                        <div style="overflow: hidden;">
+                            <div style="height: 50px;margin: 20px 0;background-color: green;">box2</div>
+                        </div>
+                        <div style="height: 50px;margin: 20px 0;background-color: blue">box3</div>
+                    </div>
+                </section>
+                <section>
+                    <h2>BFC 特性之二</h2>
+                    <p class="taj">
+                        BFC可以消除浮动带来的影响
+                    </p>
+                </section>
+                <section>
+                <pre>
+                    <code>
+<div id="clear-fix-outer" style="background-color: #eee;border: 2px solid red">
+    <div id="clear-fix-inner" style="width: 100px;height: 100px;background-color: green;float: none;overflow: visible;">box</div>
+</div>
+                    </code>
+                </pre>
+                    <div class="tal">
+                        float: <button id="float-btn" style="padding: 6px 15px;vertical-align: middle;font-size: 18px;">none</button>
+                    </div>
+                    <div class="tal">
+                        overflow: <select name="" id="overflow-selection" style="padding: 6px 15px;vertical-align: middle;font-size: 18px;">
+                            <option value="visible">visible</option>
+                            <option value="auto">auto</option>
+                            <option value="hidden">hidden</option>
+                            <option value="scroll">scroll</option>
+                        </select>
+                    </div>
+                    <div id="clear-fix-outer" style="background-color: #eee;border: 2px solid red">
+                        <div id="clear-fix-inner" style="width: 100px;height: 100px;background-color: green;float: none;overflow: visible;">box</div>
+                    </div>
+                </section>
+            </section>
+            <section>
+                <h2>脱离常规流</h2>
+                <pre>
+                    <code>
+<div style="background-color: #eee;border: 2px solid red">
+    <div id="absolute-box" style="width: 200px; height:100px; background-color: green">
+        absolute
+    </div>
+    <div id="normal-flow-box" style="width: 400px;height: 100px;background-color: blue;">
+        normal flow
+    </div>
+</div>
+                    </code>
+                </pre>
+                <div class="tal" style="margin-bottom: 20px;">
+                    <span style="background-color: red;font-weight: 500">absolute box</span>  position: <button id="absolute-btn" style="padding: 6px 15px;vertical-align: middle;font-size: 18px;">static</button>
+                    top: <input type="range" min="0" max="100" step="1" value="0" id="abs-top"> <span id="abs-top-value" class="fb">0</span>px &nbsp;&nbsp;&nbsp;&nbsp;left: <input type="range" min="0" max="100" step="1" value="0" id="abs-left"> <span id="abs-left-value">0</span>px 
+                    padding: <input type="range" min="0" max="100" step="1" value="0" id="absolute-padding"> <span id="absolute-padding-value" class="fb">0</span>px &nbsp;&nbsp;&nbsp;&nbsp;border: <input type="range" min="0" max="100" step="1" value="0" id="absolute-border"> <span id="absolute-border-value">0</span>px 
+                </div>
+                <div class="tal" style="margin-bottom: 20px;">
+                    <span style="background-color: red;font-weight: 500">normal box</span>  position: 
+                    padding: <input type="range" min="0" max="100" step="1" value="0" id="normal-padding"> <span id="normal-padding-value" class="fb">0</span>px &nbsp;&nbsp;&nbsp;&nbsp;border: <input type="range" min="0" max="100" step="1" value="0" id="normal-border"> <span id="normal-border-value">0</span>px 
+                </div>
+                <div style="background-color: #eee;border: 2px solid red">
+                    <div id="absolute-box" style="width: 200px; height:100px; background-color: green">
+                        absolute
+                    </div>
+                    <div id="normal-flow-box" style="width: 400px;height: 100px;background-color: blue;">
+                        normal flow
+                    </div>
+                </div>
+            </section>
+            <section>
+                <section>
+                    <h2>position:absolute 特性之</h2>
+                    <h1 class="fr">位置跟随</h1>
+                </section>
+                <section>
+                    <h2>对于没有显示设定top，left，right，bottom属性的absolute定位元素，其定位位置为原文本流中所处的位置</h2>
+                </section>
+                <section>
+                <pre>
+                    <code>
+<div id="follow-box" style="background-color: #eee; text-align: left;border: 1px solid yellow">
+    <div style="display:inline-block;background-color: red;width: 200px;height: 100px;">static</div><!-- 
+     --><div style="display:inline-block;background-color: green;width: 200px;height: 100px;">static</div><!-- 
+     --><div style="display:inline-block;background-color: blue;width: 200px;height: 100px;">static</div>
+</div>
+                    </code>
+                </pre>
+                    <div id="follow-box" style="background-color: #eee; text-align: left;border: 1px solid yellow">
+                        <div style="display:inline-block;background-color: red;width: 200px;height: 100px;">static</div><!-- 
+                         --><div style="display:inline-block;background-color: green;width: 200px;height: 100px;">static</div><!-- 
+                         --><div style="display:inline-block;background-color: blue;width: 200px;height: 100px;">static</div>
+                    </div>
+                </section>
+                <section>
+                    <h1>位置跟随有什么实际用处 ？？</h1>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+    <div style="background-color: #eee;width:300px;margin: 0 auto;text-align: left;">
+        <img src="../../images/positioning/bg.jpg" style="border: 1px solid red;margin: 0;width: 298px;max-width: 100%;max-height: 100%;vertical-align: top;" alt="">
+        <span style="background-color: red;padding: 0 10px;">推荐</span>
+    </div>
+                        </code>
+                    </pre>
+                    <div style="background-color: #eee;width:300px;margin: 0 auto;text-align: left;">
+                        <span style="background-color: red;padding: 0 10px;">推荐</span>
+                        <img src="../../images/positioning/bg.jpg" style="border: 1px solid red;margin: 0;width: 298px;max-width: 100%;max-height: 100%;vertical-align: top;" alt="">
+                    </div>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+<div style="position:relative;background-color: #eee;width:300px;margin: 0 auto;text-align: left;">
+    <img src="../../images/positioning/bg.jpg" style="border: 1px solid red;margin: 0;width: 298px;max-width: 100%;max-height: 100%;vertical-align: top;" alt="">
+    <span style="position: absolute;right: 0;top:0;padding: 0 10px;background-color: red;">推荐</span>
+</div>
+                        </code>
+                    </pre>
+                    <div style="position:relative;background-color: #eee;width:300px;margin: 0 auto;text-align: left;">
+                        <img src="../../images/positioning/bg.jpg" style="border: 1px solid red;margin: 0;width: 298px;max-width: 100%;max-height: 100%;vertical-align: top;" alt=""><!-- 
+                         --><span style="position: absolute;right: 0;top:0;padding: 0 10px;background-color: red;">推荐</span>
+                    </div>
+                </section>
+                <section>
+                    <pre>
+                        <code>
+<div style="background-color: #eee;width:300px;margin: 0 auto;text-align: left;">
+    <img src="../../images/positioning/bg.jpg" style="border: 1px solid red;margin: 0;width: 298px;max-width: 100%;max-height: 100%;vertical-align: top;" alt=""><!-- 
+     --><span style="position: absolute;margin-left:-80px;padding: 0 10px;background-color: red;">推荐</span>
+</div>
+                        </code>
+                    </pre>
+                    <div style="background-color: #eee;width:300px;margin: 0 auto;text-align: left;">
+                        <img src="../../images/positioning/bg.jpg" style="border: 1px solid red;margin: 0;width: 298px;max-width: 100%;max-height: 100%;vertical-align: top;" alt="">
+                        <span style="position: absolute;margin-left:-80px;padding: 0 10px;background-color: red;">推荐</span>
+                    </div>
+                </section>
+            </section>
+            <section>
+                <h2>position: fixed</h2>
+                <div class="tal">
+                    <p>1、定位的基准是其containing block，也就是浏览器可视区域（viewport），不会因为滚动而改变位置</p>
+                    <p>2、该元素会脱离常规流（out of flow）</p>
+                </div>
+                <p></p>
+            </section>
+            <section>
+                <h2>参考文档</h2>
+                <ol>
+                    <li><a href="https://www.w3.org/TR/CSS2/visuren.html">W3C官方文档</a></li>
+                    <li><a href="http://kayosite.com/block-formatting-contexts-in-detail.html">详说 Block Formatting Contexts (块级格式化上下文)</a></li>
+                    <li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context">块格式化上下文</a></li>
+                </ol>
+            </section>
+        </div>
+    </div>
+
+    <!-- build:js(.) scripts/position-vendor.js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/headjs/dist/1.0.0/head.min.js"></script>
+    <script src="bower_components/reveal.js/js/reveal.js"></script>
+    <script src="bower_components/reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="bower_components/reveal.js/plugin/notes/notes.js"></script>
+    <script src="bower_components/reveal.js/plugin/zoom-js/zoom.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js({app,.tmp}) scripts/position.js -->
+    <script src="scripts/main.js"></script>
+    <!-- endbuild -->
+    <script type="text/javascript">
+        $(function() {
+            $('#top').on('change', function(e) {
+                $('.box2').css({top: e.target.value+'px'});
+            });
+            $('#left').on('change', function(e) {
+                $('.box2').css({left: e.target.value+'px'});
+            });
+            $('#rel-top').on('change', function(e) {
+                $('#rel-box').css({top: e.target.value+'%'});
+            });
+            $('#rel-left').on('change', function(e) {
+                $('#rel-box').css({left: e.target.value+'%'});
+            });
+            $('#rel-border').on('change', function(e) {
+                var value = e.target.value;
+                $('#border-value').text(e.target.value);
+                $('#rel-border-box').css({'border': value+'px solid blue'});
+            });
+            $('#rel-padding').on('change', function(e) {
+                var value = e.target.value;
+                $('#padding-value').text(e.target.value);
+                $('#rel-border-box').css({'padding': value+'px'});
+            });
+            $('#rel-margin').on('change', function(e) {
+                var value = e.target.value;
+                $('#margin-value').text(e.target.value);
+                $('#rel-border-box').css({'margin': value+'px'});
+            });
+            $('#rel-top-2').on('change', function(e) {
+                var value = e.target.value;
+                $('#top-value').text(e.target.value);
+                $('#rel-box-2').css({'top': value+'%'});
+            });
+            $('#rel-left-2').on('change', function(e) {
+                var value = e.target.value;
+                $('#left-value').text(e.target.value);
+                $('#rel-box-2').css({'left': value+'%'});
+            });
+            $('#text-width').on('change', function(e) {
+                var value = e.target.value;
+                $('#text-width-value').text(e.target.value);
+                $('#changed-p').css({'width': value+'px'});
+            });
+            $('#rel-btn').on('click', function (e) {
+                var target = $(e.target);
+                var text = target.text();
+                
+                if(text === 'relative') {
+                    $('#rel-box').css({position: 'static'});
+                    target.text('static');
+                } else {
+                    $('#rel-box').css({position: 'relative'});
+                    target.text("relative");
+                }
+            });
+
+            $('#abs-border').on('change', function(e) {
+                var value = e.target.value;
+                $('#abs-border-value').text(e.target.value);
+                $('#abs-box').css({'border': value+'px solid blue'});
+            });
+            $('#abs-padding').on('change', function(e) {
+                var value = e.target.value;
+                $('#abs-padding-value').text(e.target.value);
+                $('#abs-box').css({'padding': value+'px'});
+            });
+            $('#abs-margin').on('change', function(e) {
+                var value = e.target.value;
+                $('#abs-margin-value').text(e.target.value);
+                $('#abs-box').css({'margin': value+'px'});
+            });
+
+            $('#float-btn').on('click', function(e) {
+                var target = $(e.target);
+                var value = target.text();
+                if(value === 'none') {
+                    $('#clear-fix-inner').css({float: 'left'});
+                    target.text('left');
+                } else {
+                    $('#clear-fix-inner').css({float: 'none'});
+                    target.text('none');
+                }
+            });
+
+            $('#overflow-selection').on('change', function(e) {
+                var value = e.target.value;
+                $('#clear-fix-outer').css({overflow: value});
+            });
+
+            $('#absolute-btn').on('click', function(e) {
+                var target = $(e.target);
+                var value = target.text();
+                if(value === 'static') {
+                    $('#absolute-box').css({position: 'absolute'});
+                    target.text('absolute');
+                } else {
+                    $('#absolute-box').css({position: 'static'});
+                    target.text('static');
+                }
+            });
+            $('#abs-top').on('change', function(e) {
+                var value = e.target.value;
+                $('#absolute-box').css({top: value+'px'});
+                $('#abs-top-value').text(value);
+            });
+            $('#abs-left').on('change', function(e) {
+                var value = e.target.value;
+                $('#absolute-box').css({left: value+'px'});
+                $('#abs-left-value').text(value);
+
+            });
+            $('#absolute-padding').on('change', function(e) {
+                var value = e.target.value;
+                $('#absolute-box').css({padding: value+'px'});
+                $('#absolute-padding-value').text(value);
+            });
+            $('#absolute-border').on('change', function(e) {
+                var value = e.target.value;
+                $('#absolute-box').css({border: value+'px solid black'});
+                $('#absolute-border-value').text(value);
+            });
+            $('#normal-padding').on('change', function(e) {
+                var value = e.target.value;
+                $('#normal-flow-box').css({padding: value+'px'});
+                $('#normal-padding-value').text(value);
+            });
+            $('#normal-border').on('change', function(e) {
+                var value = e.target.value;
+                $('#normal-flow-box').css({border: value+'px solid black'});
+                $('#normal-border-value').text(value);
+            });
+
+            $('#follow-box').on('click', function(e) {
+                var target = $(e.target);
+                var position = target.css('position');
+                if(position === 'absolute') {
+                    target.css({position: 'static'});
+                    target.text('static');
+                } else {
+                    target.css({position: 'absolute'});
+                    target.text('absolute');
+                }
+            });
+
+            $('.to-absolute').on('click', function(e) {
+                // var this = e.target;
+                var position = $(this).css('position');
+                if(position === 'absolute') {
+                    $(this).css({position: 'static'});
+                    $(this).find('div').text('static');
+                } else {
+                    $(this).css({position: 'absolute'});
+                    $(this).find('div').text('absolute');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -27,6 +27,10 @@
       "level": 2,
       "href": "css-basis/clearfix/clearfix.html"
     }, {
+      "name": "Positioning Scheme",
+      "href": "css-basis/positioning-scheme/position.html",
+      "level": 2
+    }, {
       "name": "Line-height and vertical-align",
       "level": 2,
       "href": "css-basis/line-height-vertical-align/line-height-vertical-align.html"
@@ -64,6 +68,26 @@
       }, {
         "name": "BFC 神奇背后的原理",
         "href": "http://www.cnblogs.com/lhb25/p/inside-block-formatting-ontext.html",
+        "level": 3
+      }, {
+        "name": "详说 Block Formatting Contexts (块级格式化上下文)",
+        "href": "http://kayosite.com/block-formatting-contexts-in-detail.html",
+        "level": 3
+      }]
+    }, {
+      "name": "Containing block",
+      "level": 2,
+      "children": [{
+        "name": "Definition of containing block",
+        "href": "https://www.w3.org/TR/CSS2/visudet.html#containing-block-details",
+        "level": 3
+      }, {
+        "name": "块格式化上下文",
+        "href": "https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context",
+        "level": 3,
+      }, {
+        "name": "CSS包含块CONTAINING BLOCK详解",
+        "href": "http://hao.jser.com/archive/7472/",
         "level": 3
       }]
     }]
