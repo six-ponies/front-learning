@@ -18,7 +18,7 @@ $(document).ready(function() {
         createNode(data.children[i], node);
     }
   }
-  $.getJSON('dataBase/1.json', function(data) {
+  $.getJSON('dataBase/1.json').then(function(data) {
 
     $('body').mindmap();
     createNode(data);
