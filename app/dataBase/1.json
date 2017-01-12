@@ -295,6 +295,9 @@
     }, {
       "name": "The 300 ms Click Delay and iOS 8",
       "href": "http://developer.telerik.com/featured/300-ms-click-delay-ios-8/"
+    }, {
+      "name": "Why the Scroll Event Change in iOS 8 is a Big Deal",
+      "href": "http://developer.telerik.com/featured/scroll-event-change-ios-8-big-deal/"
     }]
   }, {
     "name": "构建工具",
