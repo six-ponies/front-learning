@@ -279,24 +279,6 @@
           "href": "http://www.alloyteam.com/2012/03/web-cache-1-web-cache-overview/"
         }]
       }]
-    }, {
-      "name": "HTTPS",
-      "level": 2,
-      "children": [{
-        "name": "SSL/TLS原理详解",
-        "href": "https://segmentfault.com/a/1190000002554673",
-        "level": 3
-      }, {
-        "name": "How does HTTPS actually work?",
-        "href": "http://robertheaton.com/2014/03/27/how-does-https-actually-work/",
-        "level": 3
-      }, {
-        "name": "白话解释 对称加密算法 VS 非对称加密算法",
-        "href": "https://segmentfault.com/a/1190000004461428",
-        "level": 3
-      }, {
-        "name": ""
-      }]
     }]
   }, {
     "name": "移动端",
@@ -313,6 +295,9 @@
     }, {
       "name": "The 300 ms Click Delay and iOS 8",
       "href": "http://developer.telerik.com/featured/300-ms-click-delay-ios-8/"
+    }, {
+      "name": "Why the Scroll Event Change in iOS 8 is a Big Deal",
+      "href": "http://developer.telerik.com/featured/scroll-event-change-ios-8-big-deal/"
     }]
   }, {
     "name": "构建工具",
